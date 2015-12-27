@@ -124,6 +124,10 @@ namespace OpenRA.Platforms.Default
 			var data = bitmap.LockBits(rect,
 				System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
+			// TODO: most of the legacy GL calls used below don't exist in ES
+			if (OpenGL.Features.HasFlag(OpenGL.GLFeatures.GLES2OrGreater))
+				return bitmap;
+
 			OpenGL.glPushClientAttrib(OpenGL.GL_CLIENT_PIXEL_STORE_BIT);
 
 			OpenGL.glPixelStoref(OpenGL.GL_PACK_ROW_LENGTH, data.Stride / 4f);

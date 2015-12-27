@@ -75,6 +75,7 @@ namespace OpenRA.Platforms.Default
 		public Sdl2PlatformWindow(Size requestWindowSize, WindowMode windowMode, int batchSize)
 		{
 			Console.WriteLine("Using SDL 2 with OpenGL renderer");
+			var useGLES = true;
 
 			// Lock the Window/Surface properties until initialization is complete
 			lock (syncObject)
@@ -109,6 +110,13 @@ namespace OpenRA.Platforms.Default
 				// HiDPI doesn't work properly on OSX with (legacy) fullscreen mode
 				if (Platform.CurrentPlatform == PlatformType.OSX && windowMode == WindowMode.Fullscreen)
 					SDL.SDL_SetHint(SDL.SDL_HINT_VIDEO_HIGHDPI_DISABLED, "1");
+
+				if (useGLES)
+				{
+					SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+					SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_MINOR_VERSION, 0);
+					SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_CONTEXT_PROFILE_MASK, (int)SDL.SDL_GLprofile.SDL_GL_CONTEXT_PROFILE_ES);
+				}
 
 				window = SDL.SDL_CreateWindow("OpenRA", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED,
 					windowSize.Width, windowSize.Height, windowFlags);

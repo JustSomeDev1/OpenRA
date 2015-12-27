@@ -47,7 +47,8 @@ namespace OpenRA.Platforms.Default
 			OpenGL.glBindRenderbuffer(OpenGL.RENDERBUFFER_EXT, depth);
 			OpenGL.CheckGLError();
 
-			OpenGL.glRenderbufferStorage(OpenGL.RENDERBUFFER_EXT, OpenGL.GL_DEPTH_COMPONENT, size.Width, size.Height);
+			var glDepth = OpenGL.Features.HasFlag(OpenGL.GLFeatures.GLES2OrGreater) ? OpenGL.GL_DEPTH_COMPONENT16 : OpenGL.GL_DEPTH_COMPONENT;
+			OpenGL.glRenderbufferStorage(OpenGL.RENDERBUFFER_EXT, glDepth, size.Width, size.Height);
 			OpenGL.CheckGLError();
 
 			OpenGL.glFramebufferRenderbuffer(OpenGL.FRAMEBUFFER_EXT, OpenGL.DEPTH_ATTACHMENT_EXT, OpenGL.RENDERBUFFER_EXT, depth);

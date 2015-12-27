@@ -35,3 +35,11 @@ if [ ! -f soft_oal.dll ]; then
 	cp ./OpenAL-Soft/bin/Win32/soft_oal.dll ./soft_oal.dll
 	rm -rf OpenAL-Soft
 fi
+
+if [ ! -f libGLESv2.dll -o ! -f libEGL.dll ]; then
+	echo "Fetching ANGLE from NuGet"
+	../../noget.sh ANGLE.WindowsStore 2.1.6
+	cp ./ANGLE.WindowsStore/bin/Windows/Win32/libGLESv2.dll .
+	cp ./ANGLE.WindowsStore/bin/Windows/Win32/libEGL.dll .
+	rm -rf ANGLE.WindowsStore
+fi

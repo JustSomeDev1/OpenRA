@@ -28,6 +28,7 @@ namespace OpenRA.Platforms.Default
 		{
 			None = 0,
 			GL2OrGreater = 1,
+			GLES2OrGreater = 2,
 			FramebufferExt = 4,
 		}
 
@@ -135,6 +136,7 @@ namespace OpenRA.Platforms.Default
 		public const int COLOR_ATTACHMENT0_EXT = 0x8CE0;
 		public const int DEPTH_ATTACHMENT_EXT = 0x8D00;
 		public const int FRAMEBUFFER_COMPLETE_EXT = 0x8CD5;
+		public const int GL_DEPTH_COMPONENT16 = 0x81A5;
 
 		public delegate void Flush();
 		public static Flush glFlush { get; private set; }
@@ -371,7 +373,9 @@ namespace OpenRA.Platforms.Default
 			}
 
 			DetectGLFeatures();
-			if (!Features.HasFlag(GLFeatures.GL2OrGreater) || !Features.HasFlag(GLFeatures.FramebufferExt))
+			var hasValidGL = Features.HasFlag(GLFeatures.GL2OrGreater) && Features.HasFlag(GLFeatures.FramebufferExt);
+			var hasValidGLES = Features.HasFlag(GLFeatures.GLES2OrGreater);
+			if (!hasValidGL && !hasValidGLES)
 			{
 				WriteGraphicsLog("Unsupported OpenGL version: " + glGetString(GL_VERSION));
 				throw new InvalidProgramException("OpenGL Version Error: See graphics.log for details.");
@@ -425,28 +429,36 @@ namespace OpenRA.Platforms.Default
 				glBlendFunc = Bind<BlendFunc>("glBlendFunc");
 				glDepthFunc = Bind<DepthFunc>("glDepthFunc");
 				glScissor = Bind<Scissor>("glScissor");
-				glPushClientAttrib = Bind<PushClientAttrib>("glPushClientAttrib");
-				glPopClientAttrib = Bind<PopClientAttrib>("glPopClientAttrib");
-				glPixelStoref = Bind<PixelStoref>("glPixelStoref");
 				glReadPixels = Bind<ReadPixels>("glReadPixels");
 				glGenTextures = Bind<GenTextures>("glGenTextures");
 				glDeleteTextures = Bind<DeleteTextures>("glDeleteTextures");
 				glBindTexture = Bind<BindTexture>("glBindTexture");
 				glActiveTexture = Bind<ActiveTexture>("glActiveTexture");
 				glTexImage2D = Bind<TexImage2D>("glTexImage2D");
-				glGetTexImage = Bind<GetTexImage>("glGetTexImage");
 				glTexParameteri = Bind<TexParameteri>("glTexParameteri");
 				glTexParameterf = Bind<TexParameterf>("glTexParameterf");
-				glGenFramebuffers = Bind<GenFramebuffers>("glGenFramebuffersEXT");
-				glBindFramebuffer = Bind<BindFramebuffer>("glBindFramebufferEXT");
-				glFramebufferTexture2D = Bind<FramebufferTexture2D>("glFramebufferTexture2DEXT");
-				glDeleteFramebuffers = Bind<DeleteFramebuffers>("glDeleteFramebuffersEXT");
-				glGenRenderbuffers = Bind<GenRenderbuffers>("glGenRenderbuffersEXT");
-				glBindRenderbuffer = Bind<BindRenderbuffer>("glBindRenderbufferEXT");
-				glRenderbufferStorage = Bind<RenderbufferStorage>("glRenderbufferStorageEXT");
-				glDeleteRenderbuffers = Bind<DeleteRenderbuffers>("glDeleteRenderbuffersEXT");
-				glFramebufferRenderbuffer = Bind<FramebufferRenderbuffer>("glFramebufferRenderbufferEXT");
-				glCheckFramebufferStatus = Bind<CheckFramebufferStatus>("glCheckFramebufferStatusEXT");
+
+				var fbSuffix = Features.HasFlag(GLFeatures.FramebufferExt) ? "EXT" : "";
+				glGenFramebuffers = Bind<GenFramebuffers>("glGenFramebuffers" + fbSuffix);
+				glBindFramebuffer = Bind<BindFramebuffer>("glBindFramebuffer" + fbSuffix);
+				glFramebufferTexture2D = Bind<FramebufferTexture2D>("glFramebufferTexture2D" + fbSuffix);
+				glDeleteFramebuffers = Bind<DeleteFramebuffers>("glDeleteFramebuffers" + fbSuffix);
+				glGenRenderbuffers = Bind<GenRenderbuffers>("glGenRenderbuffers" + fbSuffix);
+				glBindRenderbuffer = Bind<BindRenderbuffer>("glBindRenderbuffer" + fbSuffix);
+				glRenderbufferStorage = Bind<RenderbufferStorage>("glRenderbufferStorage" + fbSuffix);
+				glDeleteRenderbuffers = Bind<DeleteRenderbuffers>("glDeleteRenderbuffers" + fbSuffix);
+				glFramebufferRenderbuffer = Bind<FramebufferRenderbuffer>("glFramebufferRenderbuffer" + fbSuffix);
+				glCheckFramebufferStatus = Bind<CheckFramebufferStatus>("glCheckFramebufferStatus" + fbSuffix);
+
+				if (Features.HasFlag(GLFeatures.GL2OrGreater))
+				{
+					// Legacy GL APIs
+					// TODO: Remove these!
+					glPushClientAttrib = Bind<PushClientAttrib>("glPushClientAttrib");
+					glPopClientAttrib = Bind<PopClientAttrib>("glPopClientAttrib");
+					glPixelStoref = Bind<PixelStoref>("glPixelStoref");
+					glGetTexImage = Bind<GetTexImage>("glGetTexImage");
+				}
 			}
 			catch (Exception e)
 			{
@@ -464,8 +476,17 @@ namespace OpenRA.Platforms.Default
 		{
 			try
 			{
-				Version = glGetString(GL_VERSION);
-				var version = Version.Contains(" ") ? Version.Split(' ')[0].Split('.') : Version.Split('.');
+				var versionString = glGetString(GL_VERSION);
+				var hasBGRA = SDL.SDL_GL_ExtensionSupported("GL_EXT_texture_format_BGRA8888") == SDL.SDL_bool.SDL_TRUE;
+
+				// TODO: Detect ES version
+				if (versionString.Contains(" ES") && hasBGRA)
+				{
+					Features |= GLFeatures.GLES2OrGreater;
+					return;
+				}
+
+				var version = versionString.Contains(" ") ? versionString.Split(' ')[0].Split('.') : versionString.Split('.');
 
 				var major = 0;
 				if (version.Length > 0)

@@ -130,6 +130,15 @@ if (!(Test-Path "rix0rrr.BeaconLib.dll"))
 	rmdir rix0rrr.BeaconLib -Recurse
 }
 
+if (!(Test-Path "windows/libGLESv2.dll") -Or !(Test-Path "windows/libEGL.dll"))
+{
+	echo "Fetching ANGLE from NuGet."
+	./nuget.exe install ANGLE.WindowsStore -Version 2.1.6 -ExcludeVersion
+	cp ANGLE.WindowsStore/bin/Windows/Win32/libGLESv2.dll ./windows/
+	cp ANGLE.WindowsStore/bin/Windows/Win32/libEGL.dll ./windows/
+	rmdir ANGLE.WindowsStore -Recurse
+}
+
 if (!(Test-Path "GeoLite2-Country.mmdb.gz") -Or (((get-date) - (get-item "GeoLite2-Country.mmdb.gz").LastWriteTime) -gt (new-timespan -days 30)))
 {
 	echo "Updating GeoIP country database from MaxMind."
