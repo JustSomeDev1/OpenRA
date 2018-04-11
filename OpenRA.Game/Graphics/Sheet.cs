@@ -152,7 +152,7 @@ namespace OpenRA.Graphics
 			if (!Buffered)
 				return;
 			dirty = true;
-			releaseBufferOnCommit = true;
+			releaseBufferOnCommit = false;
 
 			// Commit data from the buffer to the texture, allowing the buffer to be released and reclaimed by GC.
 			if (Game.Renderer != null)
