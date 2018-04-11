@@ -103,7 +103,7 @@ namespace OpenRA.Graphics
 				palettes[name].Palette = pal;
 		}
 
-		List<IFinalizedRenderable> GenerateRenderables()
+		List<IRenderable> GenerateRenderables()
 		{
 			var actors = onScreenActors.Append(World.WorldActor);
 			if (World.RenderPlayer != null)
@@ -122,14 +122,10 @@ namespace OpenRA.Graphics
 
 			worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
 
-			Game.Renderer.WorldModelRenderer.BeginFrame();
-			var renderables = worldRenderables.Select(r => r.PrepareRender(this)).ToList();
-			Game.Renderer.WorldModelRenderer.EndFrame();
-
-			return renderables;
+			return worldRenderables.ToList();
 		}
 
-		List<IFinalizedRenderable> GenerateOverlayRenderables()
+		List<IRenderable> GenerateOverlayRenderables()
 		{
 			var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>()
 				.Where(a => a.Actor.IsInWorld && !a.Actor.Disposed && (!a.Trait.SpatiallyPartitionable || onScreenActors.Contains(a.Actor)))
@@ -153,11 +149,7 @@ namespace OpenRA.Graphics
 				.Concat(aboveShroudEffects)
 				.Concat(aboveShroudOrderGenerator);
 
-			Game.Renderer.WorldModelRenderer.BeginFrame();
-			var finalOverlayRenderables = overlayRenderables.Select(r => r.PrepareRender(this)).ToList();
-			Game.Renderer.WorldModelRenderer.EndFrame();
-
-			return finalOverlayRenderables;
+			return overlayRenderables.ToList();
 		}
 
 		public void Draw()

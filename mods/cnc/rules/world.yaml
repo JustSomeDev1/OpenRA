@@ -260,7 +260,4 @@ World:
 
 EditorWorld:
 	Inherits: ^BaseWorld
-	EditorActorLayer:
-	EditorResourceLayer:
-	EditorSelectionLayer:
 	LoadWidgetAtGameStart:

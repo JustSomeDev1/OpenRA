@@ -14,7 +14,7 @@ using OpenRA.Graphics;
 
 namespace OpenRA.Mods.Common.Graphics
 {
-	public struct SelectionBoxRenderable : IRenderable, IFinalizedRenderable
+	public struct SelectionBoxRenderable : IRenderable
 	{
 		readonly WPos pos;
 		readonly Rectangle decorationBounds;
@@ -41,7 +41,6 @@ namespace OpenRA.Mods.Common.Graphics
 		public IRenderable OffsetBy(WVec vec) { return new SelectionBoxRenderable(pos + vec, decorationBounds, color); }
 		public IRenderable AsDecoration() { return this; }
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			var iz = 1 / wr.Viewport.Zoom;

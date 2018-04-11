@@ -14,7 +14,7 @@ using OpenRA.Graphics;
 
 namespace OpenRA.Mods.Common.Graphics
 {
-	public struct DetectionCircleRenderable : IRenderable, IFinalizedRenderable
+	public struct DetectionCircleRenderable : IRenderable
 	{
 		readonly WPos centerPosition;
 		readonly WDist radius;
@@ -63,7 +63,6 @@ namespace OpenRA.Mods.Common.Graphics
 
 		public IRenderable AsDecoration() { return this; }
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			var wcr = Game.Renderer.WorldRgbaColorRenderer;

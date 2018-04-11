@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace OpenRA.Graphics
 {
-	public struct UISpriteRenderable : IRenderable, IFinalizedRenderable
+	public struct UISpriteRenderable : IRenderable
 	{
 		readonly Sprite sprite;
 		readonly WPos effectiveWorldPos;
@@ -45,7 +45,6 @@ namespace OpenRA.Graphics
 		public IRenderable OffsetBy(WVec vec) { return this; }
 		public IRenderable AsDecoration() { return this; }
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			Game.Renderer.SpriteRenderer.DrawSprite(sprite, screenPos, palette, scale * sprite.Size);

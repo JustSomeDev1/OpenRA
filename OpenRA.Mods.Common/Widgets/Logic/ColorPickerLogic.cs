@@ -31,19 +31,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			if (!ChromeMetrics.TryGet("ColorPickerActorType", out actorType))
 				actorType = "mcv";
 
-			var preview = widget.GetOrNull<ActorPreviewWidget>("PREVIEW");
-			var actor = world.Map.Rules.Actors[actorType];
-
-			var td = new TypeDictionary();
-			td.Add(new OwnerInit(world.WorldActor.Owner));
-			td.Add(new FactionInit(world.WorldActor.Owner.PlayerReference.Faction));
-			foreach (var api in actor.TraitInfos<IActorPreviewInitInfo>())
-				foreach (var o in api.ActorPreviewInits(actor, ActorPreviewType.ColorPicker))
-					td.Add(o);
-
-			if (preview != null)
-				preview.SetPreview(actor, td);
-
 			var hueSlider = widget.Get<SliderWidget>("HUE");
 			var mixer = widget.Get<ColorMixerWidget>("MIXER");
 			var randomButton = widget.GetOrNull<ButtonWidget>("RANDOM_BUTTON");

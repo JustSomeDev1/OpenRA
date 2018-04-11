@@ -16,7 +16,7 @@ using OpenRA.Mods.Common.Projectiles;
 
 namespace OpenRA.Mods.Common.Graphics
 {
-	public struct RailgunHelixRenderable : IRenderable, IFinalizedRenderable
+	public struct RailgunHelixRenderable : IRenderable
 	{
 		readonly WPos pos;
 		readonly int zOffset;
@@ -51,7 +51,6 @@ namespace OpenRA.Mods.Common.Graphics
 		public IRenderable OffsetBy(WVec vec) { return new RailgunHelixRenderable(pos + vec, zOffset, railgun, info, ticks); }
 		public IRenderable AsDecoration() { return this; }
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			if (railgun.ForwardStep == WVec.Zero)

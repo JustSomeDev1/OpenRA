@@ -161,22 +161,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					cancelText: "Stay");
 			};
 
-			var saveMapButton = menu.Get<ButtonWidget>("SAVE_MAP");
-			saveMapButton.IsVisible = () => world.Type == WorldType.Editor;
-			saveMapButton.OnClick = () =>
-			{
-				hideMenu = true;
-				var editorActorLayer = world.WorldActor.Trait<EditorActorLayer>();
-				Ui.OpenWindow("SAVE_MAP_PANEL", new WidgetArgs()
-				{
-					{ "onSave", (Action<string>)(_ => hideMenu = false) },
-					{ "onExit", () => hideMenu = false },
-					{ "map", world.Map },
-					{ "playerDefinitions", editorActorLayer.Players.ToMiniYaml() },
-					{ "actorDefinitions", editorActorLayer.Save() }
-				});
-			};
-
 			var musicButton = menu.Get<ButtonWidget>("MUSIC");
 			musicButton.IsDisabled = () => leaving;
 			musicButton.OnClick = () =>

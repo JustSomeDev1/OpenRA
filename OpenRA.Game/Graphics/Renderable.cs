@@ -24,12 +24,6 @@ namespace OpenRA.Graphics
 		IRenderable WithZOffset(int newOffset);
 		IRenderable OffsetBy(WVec offset);
 		IRenderable AsDecoration();
-
-		IFinalizedRenderable PrepareRender(WorldRenderer wr);
-	}
-
-	public interface IFinalizedRenderable
-	{
 		void Render(WorldRenderer wr);
 		void RenderDebugGeometry(WorldRenderer wr);
 		Rectangle ScreenBounds(WorldRenderer wr);

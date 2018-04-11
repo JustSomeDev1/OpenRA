@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace OpenRA.Graphics
 {
-	public struct SpriteRenderable : IRenderable, IFinalizedRenderable
+	public struct SpriteRenderable : IRenderable
 	{
 		public static readonly IEnumerable<IRenderable> None = new IRenderable[0];
 
@@ -57,7 +57,6 @@ namespace OpenRA.Graphics
 			return new float3(xy, sprite.Offset.Z + wr.ScreenZPosition(pos, 0) - 0.5f * scale * sprite.Size.Z);
 		}
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			Game.Renderer.WorldSpriteRenderer.DrawSprite(sprite, ScreenPosition(wr), palette, scale * sprite.Size);

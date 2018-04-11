@@ -151,13 +151,6 @@ Container@MENU_BACKGROUND:
 							Width: 140
 							Height: 35
 							Text: Music
-						Button@MAP_EDITOR_BUTTON:
-							X: 300
-							Y: 0
-							Width: 140
-							Height: 35
-							Text: Map Editor
-							Font: Bold
 						Button@ASSETBROWSER_BUTTON:
 							X: 450
 							Y: 0
@@ -177,41 +170,6 @@ Container@MENU_BACKGROUND:
 							Width: 140
 							Height: 35
 							Text: Back
-				Container@MAP_EDITOR_MENU:
-					Width: PARENT_RIGHT
-					Visible: False
-					Children:
-						Label@MAP_EDITOR_MENU_TITLE:
-							X: 0
-							Y: 0 - 30
-							Width: PARENT_RIGHT
-							Height: 20
-							Text: Map Editor
-							Align: Center
-							Font: Bold
-							Contrast: True
-						Button@NEW_MAP_BUTTON:
-							X: 0
-							Y: 0
-							Width: 140
-							Height: 35
-							Text: New Map
-							Font: Bold
-						Button@LOAD_MAP_BUTTON:
-							X: 150
-							Y: 0
-							Width: 140
-							Height: 35
-							Text: Load Map
-							Font: Bold
-						Button@BACK_BUTTON:
-							X: 300
-							Y: 0
-							Width: 140
-							Height: 35
-							Text: Back
-							Font: Bold
-							Key: escape
 		Container@SYSTEM_INFO_PROMPT:
 			X: (WINDOW_RIGHT - WIDTH) / 2
 			Y: (WINDOW_BOTTOM - HEIGHT) / 2

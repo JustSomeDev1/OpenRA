@@ -80,7 +80,6 @@
     <Compile Include="Traits\AttractsWorms.cs" />
     <Compile Include="UtilityCommands\D2kMapImporter.cs" />
     <Compile Include="UtilityCommands\ImportD2kMapCommand.cs" />
-    <Compile Include="Traits\World\D2kEditorResourceLayer.cs" />
     <Compile Include="Lint\CheckImportActors.cs" />
     <Compile Include="PackageLoaders\D2kSoundResources.cs" />
   </ItemGroup>

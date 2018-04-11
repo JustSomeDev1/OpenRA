@@ -15,7 +15,7 @@ using OpenRA.Graphics;
 namespace OpenRA.Mods.Common.Graphics
 {
 	public enum BeamRenderableShape { Cylindrical, Flat }
-	public struct BeamRenderable : IRenderable, IFinalizedRenderable
+	public struct BeamRenderable : IRenderable
 	{
 		readonly WPos pos;
 		readonly int zOffset;
@@ -44,7 +44,6 @@ namespace OpenRA.Mods.Common.Graphics
 		public IRenderable OffsetBy(WVec vec) { return new BeamRenderable(pos + vec, zOffset, length, shape, width, color); }
 		public IRenderable AsDecoration() { return this; }
 
-		public IFinalizedRenderable PrepareRender(WorldRenderer wr) { return this; }
 		public void Render(WorldRenderer wr)
 		{
 			var vecLength = length.Length;

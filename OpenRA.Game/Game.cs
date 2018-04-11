@@ -665,10 +665,6 @@ namespace OpenRA
 
 				using (new PerfSample("render_widgets"))
 				{
-					Renderer.WorldModelRenderer.BeginFrame();
-					Ui.PrepareRenderables();
-					Renderer.WorldModelRenderer.EndFrame();
-
 					Ui.Draw();
 
 					if (ModData != null && ModData.CursorProvider != null)
