@@ -788,8 +788,6 @@ namespace OpenRA
 						RenderTick();
 					}
 				}
-				else
-					Thread.Sleep((int)(nextUpdate - now));
 			}
 		}
 
