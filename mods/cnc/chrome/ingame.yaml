@@ -56,27 +56,6 @@ Container@INGAME_ROOT:
 					BookmarkSaveKeyPrefix: MapBookmarkSave
 					BookmarkRestoreKeyPrefix: MapBookmarkRestore
 					BookmarkKeyCount: 4
-				Container@GAME_TIMER_BLOCK:
-					Logic: GameTimerLogic
-					X: WINDOW_RIGHT / 2 - WIDTH
-					Width: 100
-					Height: 55
-					Children:
-						LabelWithTooltip@GAME_TIMER:
-							Width: PARENT_RIGHT
-							Height: 30
-							Align: Center
-							Font: Title
-							Contrast: true
-							TooltipContainer: TOOLTIP_CONTAINER
-							TooltipTemplate: SIMPLE_TOOLTIP
-						Label@GAME_TIMER_STATUS:
-							Y: 35
-							Width: PARENT_RIGHT
-							Height: 15
-							Align: Center
-							Font: Bold
-							Contrast: true
 				Container@PLAYER_ROOT:
 		Container@MENU_ROOT:
 		TooltipContainer@TOOLTIP_CONTAINER:
@@ -92,6 +71,7 @@ Container@PERF_WIDGETS:
 			Contrast: true
 			VAlign: Top
 		Background@GRAPH_BG:
+			Visible: False
 			X: 5
 			Y: WINDOW_BOTTOM - HEIGHT - 45
 			Width: 220
@@ -287,6 +267,7 @@ Container@PLAYER_WIDGETS:
 			Logic: ControlGroupLogic
 		LogicTicker@SIDEBAR_TICKER:
 		Container@SUPPORT_POWERS:
+			Visible: False
 			Logic: SupportPowerBinLogic
 			X: 10
 			Y: 10
@@ -307,6 +288,7 @@ Container@PLAYER_WIDGETS:
 					HotkeyPrefix: SupportPower
 					HotkeyCount: 6
 		Background@COMMAND_BAR:
+			Visible: False
 			Logic: CommandBarLogic
 			X: 5
 			Y: WINDOW_BOTTOM - HEIGHT - 5
@@ -456,6 +438,7 @@ Container@PLAYER_WIDGETS:
 							ImageCollection: command-icons
 							ImageName: queue-orders
 		Background@STANCE_BAR:
+			Visible: False
 			Logic: StanceSelectorLogic
 			X: 280
 			Y: WINDOW_BOTTOM - HEIGHT - 5
@@ -536,6 +519,7 @@ Container@PLAYER_WIDGETS:
 							ImageCollection: stance-icons
 							ImageName: hold-fire
 		Background@SIDEBAR_BACKGROUND:
+			Visible: False
 			Logic: MenuButtonsChromeLogic
 			X: WINDOW_RIGHT - 204
 			Y: 30
@@ -737,6 +721,7 @@ Container@PLAYER_WIDGETS:
 									Y: 7
 									ImageCollection: production-icons
 		Container@PRODUCTION_BACKGROUND:
+			Visible: False
 			X: WINDOW_RIGHT - 204
 			Y: 287
 			Children:
@@ -745,6 +730,7 @@ Container@PLAYER_WIDGETS:
 					Height: 50
 					Background: panel-black
 		ProductionPalette@PRODUCTION_PALETTE:
+			Visible: False
 			X: WINDOW_RIGHT - 203
 			Y: 288
 			TooltipContainer: TOOLTIP_CONTAINER
@@ -753,7 +739,8 @@ Container@PLAYER_WIDGETS:
 			HotkeyPrefix: Production
 			HotkeyCount: 24
 		ProductionTabs@PRODUCTION_TABS:
-			Logic: ProductionTabsLogic
+			Visible: False
+			#Logic: ProductionTabsLogic
 			PaletteWidget: PRODUCTION_PALETTE
 			TypesContainer: PRODUCTION_TYPES
 			BackgroundContainer: PRODUCTION_BACKGROUND
