@@ -1,0 +1,1 @@
+/usr/bin/xinit /usr/bin/dbus-launch --exit-with-session /usr/bin/mono /home/openra/OpenRA/OpenRA.Game.exe Engine.LaunchPath="$(readlink -f $0)" Game.Mod=ra Graphics.PixelDouble=true Graphics.CursorDouble=true Game.LockMouseWindow=true Game.UseClassicMouseStyle=true "$@" -- :0 -s 0 dpms -nolisten tcp vt7 
