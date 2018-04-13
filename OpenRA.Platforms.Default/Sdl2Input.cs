@@ -70,14 +70,6 @@ namespace OpenRA.Platforms.Default
 						{
 							switch (e.window.windowEvent)
 							{
-								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST:
-									Game.HasInputFocus = false;
-									break;
-
-								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED:
-									Game.HasInputFocus = true;
-									break;
-
 								// Triggered when moving between displays with different DPI settings
 								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED:
 									device.WindowSizeChanged();

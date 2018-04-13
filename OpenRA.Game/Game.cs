@@ -50,7 +50,6 @@ namespace OpenRA
 
 		public static Renderer Renderer;
 		public static Sound Sound;
-		public static bool HasInputFocus = false;
 
 		public static bool BenchmarkMode = false;
 
