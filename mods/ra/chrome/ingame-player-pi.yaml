@@ -147,6 +147,7 @@ Container@PLAYER_WIDGETS:
 			Height: 250
 			Children:
 				LogicTicker@PRODUCTION_TICKER:
+				TouchScreenPalette@TOUCH_PALETTE:
 				ProductionPalette@PRODUCTION_PALETTE:
 					X: 42
 					Y: 1

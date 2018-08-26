@@ -895,6 +895,7 @@
     <Compile Include="UpdateRules\Rules\DefineLocomotors.cs" />
     <Compile Include="UpdateRules\Rules\DefineOwnerLostAction.cs" />
     <Compile Include="UtilityCommands\TestDisplayCommand.cs" />
+    <Compile Include="Widgets\TouchScreenPaletteWidget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

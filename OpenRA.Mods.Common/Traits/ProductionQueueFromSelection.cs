@@ -30,6 +30,7 @@ namespace OpenRA.Mods.Common.Traits
 		readonly World world;
 		readonly Lazy<ProductionTabsWidget> tabsWidget;
 		readonly Lazy<ProductionPaletteWidget> paletteWidget;
+		readonly Lazy<TouchScreenPaletteWidget> touchPaletteWidget;
 
 		public ProductionQueueFromSelection(World world, ProductionQueueFromSelectionInfo info)
 		{
@@ -37,6 +38,7 @@ namespace OpenRA.Mods.Common.Traits
 
 			tabsWidget = Exts.Lazy(() => Ui.Root.GetOrNull(info.ProductionTabsWidget) as ProductionTabsWidget);
 			paletteWidget = Exts.Lazy(() => Ui.Root.GetOrNull(info.ProductionPaletteWidget) as ProductionPaletteWidget);
+			touchPaletteWidget = Exts.Lazy(() => Ui.Root.GetOrNull("TOUCH_PALETTE") as TouchScreenPaletteWidget);
 		}
 
 		void INotifySelection.SelectionChanged()
@@ -69,6 +71,9 @@ namespace OpenRA.Mods.Common.Traits
 				tabsWidget.Value.CurrentQueue = queue;
 			else if (paletteWidget.Value != null)
 				paletteWidget.Value.CurrentQueue = queue;
+
+			if (touchPaletteWidget.Value != null)
+				touchPaletteWidget.Value.CurrentQueue = queue;
 		}
 	}
 }

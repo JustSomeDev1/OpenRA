@@ -20,6 +20,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 	public class ClassicProductionLogic : ChromeLogic
 	{
 		readonly ProductionPaletteWidget palette;
+		readonly TouchScreenPaletteWidget touchPalette;
 		readonly World world;
 
 		void SetupProductionGroupButton(OrderManager orderManager, ProductionTypeButtonWidget button)
@@ -34,7 +35,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			Action<bool> selectTab = reverse =>
 			{
-				palette.CurrentQueue = queues.FirstOrDefault(q => q.Enabled);
+				touchPalette.CurrentQueue = palette.CurrentQueue = queues.FirstOrDefault(q => q.Enabled);
 
 				// When a tab is selected, scroll to the top because the current row position may be invalid for the new tab
 				palette.ScrollToTop();
@@ -60,6 +61,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		{
 			this.world = world;
 			palette = widget.Get<ProductionPaletteWidget>("PRODUCTION_PALETTE");
+			touchPalette = widget.Get<TouchScreenPaletteWidget>("TOUCH_PALETTE");
 
 			var background = widget.GetOrNull("PALETTE_BACKGROUND");
 			var foreground = widget.GetOrNull("PALETTE_FOREGROUND");
