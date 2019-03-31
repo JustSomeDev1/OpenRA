@@ -60,7 +60,7 @@ namespace OpenRA.Mods.Cnc.Traits
 		public object Create(ActorInitializer init) { return new ConyardChronoReturn(init, this); }
 	}
 
-	public class ConyardChronoReturn : INotifyCreated, ITick, ISync, IObservesVariables, ISelectionBar, INotifySold,
+	public class ConyardChronoReturn : INotifyCreated, ITick, IObservesVariables, ISelectionBar, INotifySold,
 		IDeathActorInitModifier, ITransformActorInitModifier
 	{
 		readonly ConyardChronoReturnInfo info;
@@ -77,13 +77,10 @@ namespace OpenRA.Mods.Cnc.Traits
 		bool returnOriginal;
 		bool selling;
 
-		[Sync]
 		int returnTicks = 0;
 
-		[Sync]
 		CPos origin;
 
-		[Sync]
 		bool triggered;
 
 		public ConyardChronoReturn(ActorInitializer init, ConyardChronoReturnInfo info)

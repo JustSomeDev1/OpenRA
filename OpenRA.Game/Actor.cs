@@ -32,6 +32,14 @@ namespace OpenRA
 			public int Hash() { return hashFunction(Trait); }
 		}
 
+		internal struct SyncHash2
+		{
+			public readonly ISync2 Trait;
+			readonly Func<int> hashFunction;
+			public SyncHash2(ISync2 trait) { Trait = trait; hashFunction = trait.SyncHash; }
+			public int Hash() { return hashFunction(); }
+		}
+
 		public readonly ActorInfo Info;
 
 		public readonly World World;
@@ -70,6 +78,7 @@ namespace OpenRA
 		}
 
 		internal SyncHash[] SyncHashes { get; private set; }
+		internal SyncHash2[] SyncHashes2 { get; private set; }
 
 		readonly IFacing facing;
 		readonly IHealth health;
@@ -136,6 +145,7 @@ namespace OpenRA
 			});
 
 			SyncHashes = TraitsImplementing<ISync>().Select(sync => new SyncHash(sync)).ToArray();
+			SyncHashes2 = TraitsImplementing<ISync2>().Select(sync => new SyncHash2(sync)).ToArray();
 		}
 
 		public void Tick()

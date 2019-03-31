@@ -49,7 +49,7 @@ namespace OpenRA.Mods.Common.Traits
 		}
 	}
 
-	public class Health : IHealth, ISync, ITick, INotifyCreated, INotifyOwnerChanged
+	public class Health : IHealth, ISync2, ITick, INotifyCreated, INotifyOwnerChanged
 	{
 		public readonly HealthInfo Info;
 		INotifyDamageStateChanged[] notifyDamageStateChanged;
@@ -60,7 +60,12 @@ namespace OpenRA.Mods.Common.Traits
 		INotifyKilled[] notifyKilled;
 		INotifyKilled[] notifyKilledPlayer;
 
-		[Sync] int hp;
+		int hp;
+
+		int ISync2.SyncHash()
+		{
+			return hp;
+		}
 
 		public int DisplayHP { get; private set; }
 

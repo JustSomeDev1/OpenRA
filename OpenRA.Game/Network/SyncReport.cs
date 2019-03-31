@@ -85,7 +85,7 @@ namespace OpenRA.Network
 					}
 				}
 			}
-
+			
 			foreach (var sync in orderManager.World.SyncedEffects)
 			{
 				var hash = Sync.Hash(sync);

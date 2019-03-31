@@ -25,6 +25,12 @@ namespace OpenRA
 	// Marker interface
 	public interface ISync { }
 
+	[RequireExplicitImplementation]
+	public interface ISync2
+	{
+		int SyncHash();
+	}
+
 	public static class Sync
 	{
 		static readonly ConcurrentCache<Type, Func<object, int>> HashFunctions =

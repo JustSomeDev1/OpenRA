@@ -31,11 +31,16 @@ namespace OpenRA.Mods.Common.Traits
 		bool IOccupySpaceInfo.SharesCell { get { return false; } }
 	}
 
-	class Immobile : IOccupySpace, ISync, INotifyAddedToWorld, INotifyRemovedFromWorld
+	class Immobile : IOccupySpace, ISync2, INotifyAddedToWorld, INotifyRemovedFromWorld
 	{
-		[Sync] readonly CPos location;
-		[Sync] readonly WPos position;
+		readonly CPos location;
+		readonly WPos position;
 		readonly Pair<CPos, SubCell>[] occupied;
+
+		int ISync2.SyncHash()
+		{
+			return Sync.HashCPos(location) ^ position.GetHashCode();
+		}
 
 		public Immobile(ActorInitializer init, ImmobileInfo info)
 		{

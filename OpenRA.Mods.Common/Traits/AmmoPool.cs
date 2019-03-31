@@ -56,16 +56,21 @@ namespace OpenRA.Mods.Common.Traits
 		public object Create(ActorInitializer init) { return new AmmoPool(init.Self, this); }
 	}
 
-	public class AmmoPool : INotifyCreated, INotifyAttack, IPips, ISync
+	public class AmmoPool : INotifyCreated, INotifyAttack, IPips, ISync2
 	{
 		public readonly AmmoPoolInfo Info;
 		readonly Stack<int> tokens = new Stack<int>();
 		ConditionManager conditionManager;
 
 		// HACK: Temporarily needed until Rearm activity is gone for good
-		[Sync] public int RemainingTicks;
+		public int RemainingTicks;
 
-		[Sync] int currentAmmo;
+		int currentAmmo;
+
+		int ISync2.SyncHash()
+		{
+			return (RemainingTicks << 16) ^ currentAmmo;
+		}
 
 		public AmmoPool(Actor self, AmmoPoolInfo info)
 		{

@@ -39,12 +39,12 @@ namespace OpenRA.Mods.Common.Traits
 		public override object Create(ActorInitializer init) { return new DamagedByTerrain(init.Self, this); }
 	}
 
-	class DamagedByTerrain : ConditionalTrait<DamagedByTerrainInfo>, ITick, ISync, INotifyAddedToWorld
+	class DamagedByTerrain : ConditionalTrait<DamagedByTerrainInfo>, ITick, INotifyAddedToWorld
 	{
 		readonly IHealth health;
 
-		[Sync] int damageTicks;
-		[Sync] int damageThreshold;
+		int damageTicks;
+		int damageThreshold;
 
 		public DamagedByTerrain(Actor self, DamagedByTerrainInfo info) : base(info)
 		{

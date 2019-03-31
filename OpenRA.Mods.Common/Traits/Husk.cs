@@ -50,7 +50,7 @@ namespace OpenRA.Mods.Common.Traits
 		}
 	}
 
-	public class Husk : IPositionable, IFacing, ISync, INotifyCreated, INotifyAddedToWorld, INotifyRemovedFromWorld,
+	public class Husk : IPositionable, IFacing, ISync2, INotifyCreated, INotifyAddedToWorld, INotifyRemovedFromWorld,
 		IDeathActorInitModifier, IEffectiveOwner
 	{
 		readonly Actor self;
@@ -60,9 +60,14 @@ namespace OpenRA.Mods.Common.Traits
 		readonly int dragSpeed;
 		readonly WPos finalPosition;
 
-		[Sync] public CPos TopLeft { get; private set; }
-		[Sync] public WPos CenterPosition { get; private set; }
-		[Sync] public int Facing { get; set; }
+		public CPos TopLeft { get; private set; }
+		public WPos CenterPosition { get; private set; }
+		public int Facing { get; set; }
+
+		int ISync2.SyncHash()
+		{
+			return Facing ^ CenterPosition.GetHashCode() ^ Sync.HashCPos(TopLeft);
+		}
 
 		public int TurnSpeed { get { return 0; } }
 

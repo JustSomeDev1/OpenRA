@@ -111,11 +111,11 @@ namespace OpenRA.Mods.Common.Traits
 	public class AutoTarget : ConditionalTrait<AutoTargetInfo>, INotifyIdle, INotifyDamage, ITick, IResolveOrder, ISync, INotifyCreated, INotifyOwnerChanged
 	{
 		public readonly IEnumerable<AttackBase> ActiveAttackBases;
-		[Sync] int nextScanTime = 0;
+		int nextScanTime = 0;
 
 		public UnitStance Stance { get { return stance; } }
 
-		[Sync] public Actor Aggressor;
+		public Actor Aggressor;
 
 		// NOT SYNCED: do not refer to this anywhere other than UI code
 		public UnitStance PredictedStance;

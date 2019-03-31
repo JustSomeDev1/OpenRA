@@ -85,7 +85,7 @@ namespace OpenRA.Mods.Common.Traits
 	}
 
 	public class Harvester : IIssueOrder, IResolveOrder, IPips, IOrderVoice,
-		ISpeedModifier, ISync, INotifyCreated, INotifyIdle, INotifyBlockingMove
+		ISpeedModifier, ISync2, INotifyCreated, INotifyIdle, INotifyBlockingMove
 	{
 		public readonly HarvesterInfo Info;
 		readonly Mobile mobile;
@@ -98,15 +98,14 @@ namespace OpenRA.Mods.Common.Traits
 		int conditionToken = ConditionManager.InvalidConditionToken;
 		int idleDuration;
 
-		[Sync] public bool LastSearchFailed;
-		[Sync] public Actor OwnerLinkedProc = null;
-		[Sync] public Actor LastLinkedProc = null;
-		[Sync] public Actor LinkedProc = null;
-		[Sync] int currentUnloadTicks;
+		public bool LastSearchFailed;
+		public Actor OwnerLinkedProc = null;
+		public Actor LastLinkedProc = null;
+		public Actor LinkedProc = null;
+		int currentUnloadTicks;
 		public CPos? LastHarvestedCell = null;
 		public CPos? LastOrderLocation = null;
 
-		[Sync]
 		public int ContentValue
 		{
 			get
@@ -116,6 +115,11 @@ namespace OpenRA.Mods.Common.Traits
 					value += c.Key.ValuePerUnit * c.Value;
 				return value;
 			}
+		}
+
+		int ISync2.SyncHash()
+		{
+			return ContentValue;
 		}
 
 		public Harvester(Actor self, HarvesterInfo info)

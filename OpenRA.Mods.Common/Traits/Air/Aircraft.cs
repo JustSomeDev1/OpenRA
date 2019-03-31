@@ -162,7 +162,7 @@ namespace OpenRA.Mods.Common.Traits
 		}
 	}
 
-	public class Aircraft : ITick, ISync, IFacing, IPositionable, IMove, IIssueOrder, IResolveOrder, IOrderVoice, IDeathActorInitModifier,
+	public class Aircraft : ITick, ISync2, IFacing, IPositionable, IMove, IIssueOrder, IResolveOrder, IOrderVoice, IDeathActorInitModifier,
 		INotifyCreated, INotifyAddedToWorld, INotifyRemovedFromWorld, INotifyActorDisposing, INotifyBecomingIdle,
 		IActorPreviewInitModifier, IIssueDeployOrder, IObservesVariables
 	{
@@ -177,8 +177,8 @@ namespace OpenRA.Mods.Common.Traits
 		IDisposable reservation;
 		IEnumerable<int> speedModifiers;
 
-		[Sync] public int Facing { get; set; }
-		[Sync] public WPos CenterPosition { get; private set; }
+		public int Facing { get; set; }
+		public WPos CenterPosition { get; private set; }
 		public CPos TopLeft { get { return self.World.Map.CellContaining(CenterPosition); } }
 		public int TurnSpeed { get { return Info.TurnSpeed; } }
 		public Actor ReservedActor { get; private set; }
@@ -195,6 +195,11 @@ namespace OpenRA.Mods.Common.Traits
 		bool isMovingVertically;
 		WPos cachedPosition;
 		bool? landNow;
+
+		int ISync2.SyncHash()
+		{
+			return Facing ^ CenterPosition.GetHashCode();
+		}
 
 		public Aircraft(ActorInitializer init, AircraftInfo info)
 		{

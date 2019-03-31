@@ -28,7 +28,7 @@ namespace OpenRA.Mods.Common.Traits
 		public object Create(ActorInitializer init) { return new ParaDrop(init.Self, this); }
 	}
 
-	public class ParaDrop : ITick, ISync, INotifyRemovedFromWorld
+	public class ParaDrop : ITick, INotifyRemovedFromWorld
 	{
 		readonly ParaDropInfo info;
 		readonly Actor self;
@@ -39,8 +39,8 @@ namespace OpenRA.Mods.Common.Traits
 		public event Action<Actor> OnEnteredDropRange = self => { };
 		public event Action<Actor> OnExitedDropRange = self => { };
 
-		[Sync] bool inDropRange;
-		[Sync] Target target;
+		bool inDropRange;
+		Target target;
 
 		bool checkForSuitableCell;
 
