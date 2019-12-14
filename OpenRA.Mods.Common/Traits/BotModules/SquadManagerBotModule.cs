@@ -22,11 +22,20 @@ namespace OpenRA.Mods.Common.Traits
 	[Desc("Manages AI squads.")]
 	public class SquadManagerBotModuleInfo : ConditionalTraitInfo
 	{
-		[Desc("Actor types that are valid for naval squads.")]
-		public readonly HashSet<string> NavalUnitsTypes = new HashSet<string>();
+		[Desc("Actor types that are valid for ground squads.")]
+		public readonly HashSet<string> GroundUnitTypes = new HashSet<string>();
 
-		[Desc("Actor types that should generally be excluded from attack squads.")]
-		public readonly HashSet<string> ExcludeFromSquadsTypes = new HashSet<string>();
+		[Desc("Actor types that are valid for naval squads.")]
+		public readonly HashSet<string> NavalUnitTypes = new HashSet<string>();
+
+		[Desc("Actor types that are valid for air squads.")]
+		public readonly HashSet<string> AirUnitTypes = new HashSet<string>();
+
+		[Desc("Respond to protect targeted actors of these types.")]
+		public readonly HashSet<string> ProtectActorTypes = new HashSet<string>();
+
+		[Desc("Actor types that are valid targets for rush attack squads.")]
+		public readonly HashSet<string> ValidRushTargets = new HashSet<string>();
 
 		[Desc("Actor types that are considered construction yards (base builders).")]
 		public readonly HashSet<string> ConstructionYardTypes = new HashSet<string>();
@@ -119,10 +128,9 @@ namespace OpenRA.Mods.Common.Traits
 			unitCannotBeOrdered = a => a == null || a.Owner != Player || a.IsDead || !a.IsInWorld;
 		}
 
-		public bool IsEnemyUnit(Actor a)
+		public bool IsTargetableEnemyUnit(Actor a)
 		{
 			return a != null && !a.IsDead && Player.Stances[a.Owner] == Stance.Enemy
-				&& !a.Info.HasTraitInfo<HuskInfo>()
 				&& !a.GetEnabledTargetTypes().IsEmpty;
 		}
 
@@ -160,12 +168,12 @@ namespace OpenRA.Mods.Common.Traits
 
 		internal Actor FindClosestEnemy(WPos pos)
 		{
-			return World.Actors.Where(IsEnemyUnit).ClosestTo(pos);
+			return World.Actors.Where(IsTargetableEnemyUnit).ClosestTo(pos);
 		}
 
 		internal Actor FindClosestEnemy(WPos pos, WDist radius)
 		{
-			return World.FindActorsInCircle(pos, radius).Where(IsEnemyUnit).ClosestTo(pos);
+			return World.FindActorsInCircle(pos, radius).Where(IsTargetableEnemyUnit).ClosestTo(pos);
 		}
 
 		void CleanSquads()
@@ -226,15 +234,16 @@ namespace OpenRA.Mods.Common.Traits
 		void FindNewUnits(IBot bot)
 		{
 			var newUnits = World.ActorsHavingTrait<IPositionable>()
-				.Where(a => a.Owner == Player &&
-					!Info.ExcludeFromSquadsTypes.Contains(a.Info.Name) &&
-					!activeUnits.Contains(a));
+				.Where(a => a.Owner == Player && !activeUnits.Contains(a) && (
+		            Info.GroundUnitTypes.Contains(a.Info.Name) ||
+		            Info.NavalUnitTypes.Contains(a.Info.Name) ||
+		            Info.AirUnitTypes.Contains(a.Info.Name)));
 
 			foreach (var a in newUnits)
 			{
 				unitsHangingAroundTheBase.Add(a);
 
-				if (a.Info.HasTraitInfo<AircraftInfo>() && a.Info.HasTraitInfo<AttackBaseInfo>())
+				if (Info.AirUnitTypes.Contains(a.Info.Name))
 				{
 					var air = GetSquadOfType(SquadType.Air);
 					if (air == null)
@@ -242,7 +251,7 @@ namespace OpenRA.Mods.Common.Traits
 
 					air.Units.Add(a);
 				}
-				else if (Info.NavalUnitsTypes.Contains(a.Info.Name))
+				else if (Info.NavalUnitTypes.Contains(a.Info.Name))
 				{
 					var ships = GetSquadOfType(SquadType.Naval);
 					if (ships == null)
@@ -269,8 +278,10 @@ namespace OpenRA.Mods.Common.Traits
 			{
 				var attackForce = RegisterNewSquad(bot, SquadType.Assault);
 
+				// Create a new ground attack force
+				// Naval and Air forces are managed by FindNewUnits for some reason
 				foreach (var a in unitsHangingAroundTheBase)
-					if (!a.Info.HasTraitInfo<AircraftInfo>() && !Info.NavalUnitsTypes.Contains(a.Info.Name))
+					if (Info.GroundUnitTypes.Contains(a.Info.Name))
 						attackForce.Units.Add(a);
 
 				unitsHangingAroundTheBase.Clear();
@@ -283,10 +294,10 @@ namespace OpenRA.Mods.Common.Traits
 		{
 			var allEnemyBaseBuilder = AIUtils.FindEnemiesByCommonName(Info.ConstructionYardTypes, Player);
 
-			// TODO: This should use common names & ExcludeFromSquads instead of hardcoding TraitInfo checks
+			// Rush using ground forces only
+			// Naval and air attacks use their own hardcoded squad behaviour
 			var ownUnits = activeUnits
-				.Where(unit => unit.IsIdle && unit.Info.HasTraitInfo<AttackBaseInfo>()
-					&& !unit.Info.HasTraitInfo<AircraftInfo>() && !Info.NavalUnitsTypes.Contains(unit.Info.Name) && !unit.Info.HasTraitInfo<HarvesterInfo>()).ToList();
+				.Where(unit => Info.GroundUnitTypes.Contains(unit.Info.Name)).ToList();
 
 			if (!allEnemyBaseBuilder.Any() || ownUnits.Count < Info.SquadSize)
 				return;
@@ -295,7 +306,7 @@ namespace OpenRA.Mods.Common.Traits
 			{
 				// Don't rush enemy aircraft!
 				var enemies = World.FindActorsInCircle(b.CenterPosition, WDist.FromCells(Info.RushAttackScanRadius))
-					.Where(unit => IsEnemyUnit(unit) && unit.Info.HasTraitInfo<AttackBaseInfo>() && !unit.Info.HasTraitInfo<AircraftInfo>() && !Info.NavalUnitsTypes.Contains(unit.Info.Name)).ToList();
+					.Where(a => Info.ValidRushTargets.Contains(a.Info.Name) && IsTargetableEnemyUnit(a)).ToList();
 
 				if (AttackOrFleeFuzzy.Rush.CanAttack(ownUnits, enemies))
 				{
@@ -323,9 +334,10 @@ namespace OpenRA.Mods.Common.Traits
 
 			if (!protectSq.IsValid)
 			{
+				// Protect using ground forces only
+				// Naval and air attacks use their own hardcoded squad behaviour
 				var ownUnits = World.FindActorsInCircle(World.Map.CenterOfCell(GetRandomBaseCenter()), WDist.FromCells(Info.ProtectUnitScanRadius))
-					.Where(unit => unit.Owner == Player && !unit.Info.HasTraitInfo<BuildingInfo>() && !unit.Info.HasTraitInfo<HarvesterInfo>()
-						&& unit.Info.HasTraitInfo<AttackBaseInfo>());
+						.Where(unit => unit.Owner == Player && Info.GroundUnitTypes.Contains(unit.Info.Name));
 
 				foreach (var a in ownUnits)
 					protectSq.Units.Add(a);
@@ -339,14 +351,12 @@ namespace OpenRA.Mods.Common.Traits
 
 		void IBotPositionsUpdated.UpdatedDefenseCenter(CPos newLocation) { }
 
-		void IBotRespondToAttack.RespondToAttack(IBot bot, Actor self, AttackInfo e)
+		void IBotRespondToAttack.RespondToAttack(IBot bot, Actor a, AttackInfo e)
 		{
-			if (!IsEnemyUnit(e.Attacker))
+			if (!IsTargetableEnemyUnit(e.Attacker))
 				return;
 
-			// Protected priority assets, MCVs, harvesters and buildings
-			// TODO: Use *CommonNames, instead of hard-coding trait(info)s.
-			if (self.Info.HasTraitInfo<HarvesterInfo>() || self.Info.HasTraitInfo<BuildingInfo>() || self.Info.HasTraitInfo<BaseBuildingInfo>())
+			if (Info.ProtectActorTypes.Contains(a.Info.Name))
 			{
 				foreach (var n in notifyPositionsUpdated)
 					n.UpdatedDefenseCenter(e.Attacker.Location);
