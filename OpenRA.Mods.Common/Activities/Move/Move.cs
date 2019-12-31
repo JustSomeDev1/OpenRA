@@ -205,6 +205,53 @@ namespace OpenRA.Mods.Common.Activities
 			return false;
 		}
 
+		List<CPos> FindPathToCloserDestination(Actor self)
+		{
+			if (!destination.HasValue)
+				return null;
+
+			var cellRange = (self.Location - destination.Value).Length;
+
+			// Check cells from the target out to our current location
+			// Worst case performance is bounded by knowing we are within nearEnough
+			List<CPos> checkedCells = new List<CPos>();
+			List<CPos> possibleCells = new List<CPos> { destination.Value };
+
+			// Allow the unit to move closer to the destination, but don't bother if this means
+			// having to go too far around or stray to avoid obstacles.
+			// A reasonable fuzzy assumption is to say that a 1-cell improvement at a 90 degree bearing change
+			// will have a path length of ~ Pi/ 2 * cellRange. We take 2 * cellRange as being good enough.
+
+			while (possibleCells.Count > 0)
+			{
+				var c = possibleCells[0];
+				possibleCells.RemoveAt(0);
+				checkedCells.Add(c);
+
+				// Cell can hold us, but can we reach it?
+				if (mobile.CanEnterCell(c, ignoreActor))
+				{
+					List<CPos> candidatePath;
+					// TODO: The length limit must be applied during the search to avoid a performance cliff
+					using (var search = PathSearch.FromPoint(self.World, mobile.Locomotor, self, mobile.ToCell, c, BlockedByActor.All).WithoutLaneBias())
+						candidatePath = mobile.Pathfinder.FindPath(search);
+
+					if (candidatePath != null && candidatePath.Count > 0 && candidatePath.Count < 2 * cellRange)
+						return candidatePath;
+				}
+
+				// Expand into neighouring cells that aren't blocked by terrain or stationary actors
+				if (!mobile.CanEnterCell(c, check: BlockedByActor.Stationary))
+				{
+					var neighbours = CVec.Directions.Select(d => c + d)
+						.Where(d => !checkedCells.Contains(d) && (d - destination.Value).LengthSquared < cellRange * cellRange);
+					possibleCells.AddRange(neighbours);
+				}
+			}
+
+			return null;
+		}
+
 		Pair<CPos, SubCell>? PopPath(Actor self)
 		{
 			if (path.Count == 0)
@@ -229,6 +276,16 @@ namespace OpenRA.Mods.Common.Activities
 				if (!containsTemporaryBlocker && (mobile.ToCell - destination.Value).LengthSquared <= cellRange * cellRange)
 				{
 					path.Clear();
+
+					// HACK: Proof of concept to bunch units around the destination
+					Console.WriteLine("Searching for closer destination {0} {1} {2}", destination.Value, self.Location, cellRange);
+					var test = FindPathToCloserDestination(self);
+					if (test != null)
+					{
+						Console.WriteLine("Found new destination {0} {1}", test.Last(), test.Count);
+						path = test;
+					}
+
 					return null;
 				}
 
