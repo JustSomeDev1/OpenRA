@@ -194,7 +194,8 @@ namespace OpenRA.Mods.Common.Activities
 
 			// Find any harvestable resources:
 			List<CPos> path;
-			using (var search = PathSearch.Search(self.World, mobile.Locomotor, self, BlockedByActor.Stationary, loc =>
+			// TODO: Change this to BlockedByActor.Stationary after improving the local avoidance behaviour
+			using (var search = PathSearch.Search(self.World, mobile.Locomotor, self, BlockedByActor.All, loc =>
 					domainIndex.IsPassable(self.Location, loc, locomotorInfo) && harv.CanHarvestCell(self, loc) && claimLayer.CanClaimCell(self, loc))
 				.WithCustomCost(loc =>
 				{
