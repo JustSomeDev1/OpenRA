@@ -18,28 +18,9 @@ namespace OpenRA.Orders
 {
 	public class UnitOrderGenerator : IOrderGenerator
 	{
-		static Target TargetForInput(World world, CPos cell, int2 worldPixel, MouseInput mi)
-		{
-			var actor = world.ScreenMap.ActorsAtMouse(mi)
-				.Where(a => !a.Actor.IsDead && a.Actor.Info.HasTraitInfo<ITargetableInfo>() && !world.FogObscures(a.Actor))
-				.WithHighestSelectionPriority(worldPixel, mi.Modifiers);
-
-			if (actor != null)
-				return Target.FromActor(actor);
-
-			var frozen = world.ScreenMap.FrozenActorsAtMouse(world.RenderPlayer, mi)
-				.Where(a => a.Info.HasTraitInfo<ITargetableInfo>() && a.Visible && a.HasRenderables)
-				.WithHighestSelectionPriority(worldPixel, mi.Modifiers);
-
-			if (frozen != null)
-				return Target.FromFrozenActor(frozen);
-
-			return Target.FromCell(world, cell);
-		}
-
 		public virtual IEnumerable<Order> Order(World world, CPos cell, int2 worldPixel, MouseInput mi)
 		{
-			var target = TargetForInput(world, cell, worldPixel, mi);
+			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
 			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
 			var orders = world.Selection.Actors
 				.Select(a => OrderForUnit(a, target, actorsAt, cell, mi))
@@ -65,11 +46,12 @@ namespace OpenRA.Orders
 
 		public virtual string GetCursor(World world, CPos cell, int2 worldPixel, MouseInput mi)
 		{
-			var target = TargetForInput(world, cell, worldPixel, mi);
+			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
+			var selection = world.Selection.SelectionForInput(world, cell, worldPixel, mi);
 			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
 
 			bool useSelect;
-			if (Game.Settings.Game.UseClassicMouseStyle && !InputOverridesSelection(world, worldPixel, mi))
+			if (Game.Settings.Game.UseClassicMouseStyle && !TargetOverridesSelection(world, target, selection, actorsAt, cell, mi))
 				useSelect = target.Type == TargetType.Actor && target.Actor.Info.HasTraitInfo<ISelectableInfo>();
 			else
 			{
@@ -92,19 +74,21 @@ namespace OpenRA.Orders
 
 		bool IOrderGenerator.HandleKeyPress(KeyInput e) { return false; }
 
-		// Used for classic mouse orders, determines whether or not action at xy is move or select
-		public virtual bool InputOverridesSelection(World world, int2 xy, MouseInput mi)
+		public bool TargetOverridesSelection(World world, CPos cell, int2 worldPixel, MouseInput mi)
 		{
-			var actor = world.ScreenMap.ActorsAtMouse(xy)
-				.Where(a => !a.Actor.IsDead && a.Actor.Info.HasTraitInfo<ISelectableInfo>() && (a.Actor.Owner.IsAlliedWith(world.RenderPlayer) || !world.FogObscures(a.Actor)))
-				.WithHighestSelectionPriority(xy, mi.Modifiers);
-
-			if (actor == null)
-				return true;
-
-			var target = Target.FromActor(actor);
-			var cell = world.Map.CellContaining(target.CenterPosition);
+			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
+			var selection = world.Selection.SelectionForInput(world, cell, worldPixel, mi);
 			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
+
+			return TargetOverridesSelection(world, target, selection, actorsAt, cell, mi);
+		}
+
+		// Used for classic mouse orders, determines whether or not action at xy is move or select
+		public virtual bool TargetOverridesSelection(World world, Target target, Actor selection, List<Actor> actorsAt, CPos cell, MouseInput mi)
+		{
+			// Always target if there is nothing to select
+			if (selection == null)
+				return true;
 
 			var modifiers = TargetModifiers.None;
 			if (mi.Modifiers.HasModifier(Modifiers.Ctrl))
@@ -114,6 +98,7 @@ namespace OpenRA.Orders
 			if (mi.Modifiers.HasModifier(Modifiers.Alt))
 				modifiers |= TargetModifiers.ForceMove;
 
+			// Targeting overrides selection if we can issue an order that requests it
 			foreach (var a in world.Selection.Actors)
 			{
 				var o = OrderForUnit(a, target, actorsAt, cell, mi);

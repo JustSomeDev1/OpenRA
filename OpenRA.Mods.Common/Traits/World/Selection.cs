@@ -219,6 +219,32 @@ namespace OpenRA.Mods.Common.Traits
 				.FirstOrDefault();
 		}
 
+		public Target TargetForInput(World world, CPos cell, int2 worldPixel, MouseInput mi)
+		{
+			var actor = world.ScreenMap.ActorsAtMouse(mi)
+				.Where(a => !a.Actor.IsDead && a.Actor.Info.HasTraitInfo<ITargetableInfo>() && !world.FogObscures(a.Actor))
+				.WithHighestSelectionPriority(worldPixel, mi.Modifiers);
+
+			if (actor != null)
+				return Target.FromActor(actor);
+
+			var frozen = world.ScreenMap.FrozenActorsAtMouse(world.RenderPlayer, mi)
+				.Where(a => a.Info.HasTraitInfo<ITargetableInfo>() && a.Visible && a.HasRenderables)
+				.WithHighestSelectionPriority(worldPixel, mi.Modifiers);
+
+			if (frozen != null)
+				return Target.FromFrozenActor(frozen);
+
+			return Target.FromCell(world, cell);
+		}
+
+		public Actor SelectionForInput(World world, CPos cell, int2 worldPixel, MouseInput mi)
+		{
+			return world.ScreenMap.ActorsAtMouse(worldPixel)
+				.Where(a => !a.Actor.IsDead && a.Actor.Info.HasTraitInfo<ISelectableInfo>() && (a.Actor.Owner.IsAlliedWith(world.RenderPlayer) || !world.FogObscures(a.Actor)))
+				.WithHighestSelectionPriority(worldPixel, mi.Modifiers);
+		}
+
 		List<MiniYamlNode> IGameSaveTraitData.IssueTraitData(Actor self)
 		{
 			var groups = controlGroups

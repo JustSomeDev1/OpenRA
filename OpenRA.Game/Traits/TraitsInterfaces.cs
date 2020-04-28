@@ -438,6 +438,8 @@ namespace OpenRA.Traits
 		void AddToControlGroup(Actor a, int group);
 		void RemoveFromControlGroup(Actor a);
 		int? GetControlGroupForActor(Actor a);
+		Target TargetForInput(World world, CPos cell, int2 worldPixel, MouseInput mi);
+		Actor SelectionForInput(World world,  CPos cell, int2 worldPixel, MouseInput mi);
 	}
 
 	/// <summary>

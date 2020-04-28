@@ -90,6 +90,7 @@ namespace OpenRA.Mods.Common.Widgets
 		public override bool HandleMouseInput(MouseInput mi)
 		{
 			mousePos = worldRenderer.Viewport.ViewToWorldPx(mi.Location);
+			var cell = worldRenderer.Viewport.ViewToWorld(mi.Location);
 
 			var useClassicMouseStyle = Game.Settings.Game.UseClassicMouseStyle;
 
@@ -117,7 +118,7 @@ namespace OpenRA.Mods.Common.Widgets
 			{
 				if (useClassicMouseStyle && HasMouseFocus)
 				{
-					if (!IsValidDragbox && World.Selection.Actors.Any() && !multiClick && uog.InputOverridesSelection(World, mousePos, mi))
+					if (!IsValidDragbox && World.Selection.Actors.Any() && !multiClick && uog.TargetOverridesSelection(World, cell, mousePos, mi))
 					{
 						// Order units instead of selecting
 						ApplyOrders(World, mi);
