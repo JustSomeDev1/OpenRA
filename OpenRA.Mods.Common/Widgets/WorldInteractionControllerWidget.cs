@@ -118,7 +118,7 @@ namespace OpenRA.Mods.Common.Widgets
 			{
 				if (useClassicMouseStyle && HasMouseFocus)
 				{
-					if (!IsValidDragbox && World.Selection.Actors.Any() && !multiClick && uog.TargetOverridesSelection(World, cell, mousePos, mi))
+					if (!IsValidDragbox && World.Selection.Actors.Any() && !multiClick && uog.GetCursor(World, cell, mousePos, mi) != "select")
 					{
 						// Order units instead of selecting
 						ApplyOrders(World, mi);

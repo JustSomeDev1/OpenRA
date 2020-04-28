@@ -20,10 +20,18 @@ namespace OpenRA.Orders
 	{
 		public virtual IEnumerable<Order> Order(World world, CPos cell, int2 worldPixel, MouseInput mi)
 		{
+			var modifiers = TargetModifiers.None;
+			if (mi.Modifiers.HasModifier(Modifiers.Ctrl))
+				modifiers |= TargetModifiers.ForceAttack;
+			if (mi.Modifiers.HasModifier(Modifiers.Shift))
+				modifiers |= TargetModifiers.ForceQueue;
+			if (mi.Modifiers.HasModifier(Modifiers.Alt))
+				modifiers |= TargetModifiers.ForceMove;
+
 			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
 			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
 			var orders = world.Selection.Actors
-				.Select(a => OrderForUnit(a, target, actorsAt, cell, mi))
+				.Select(a => OrderForUnit(a, target, actorsAt, cell, mi, modifiers))
 				.Where(o => o != null)
 				.ToList();
 
@@ -46,49 +54,23 @@ namespace OpenRA.Orders
 
 		public virtual string GetCursor(World world, CPos cell, int2 worldPixel, MouseInput mi)
 		{
-			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
+			string cursor;
+			if (TargetOverridesSelection(world, worldPixel, cell, mi, out cursor))
+				return cursor;
+
 			var selection = world.Selection.SelectionForInput(world, cell, worldPixel, mi);
-			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
-
-			bool useSelect;
-			if (Game.Settings.Game.UseClassicMouseStyle && !TargetOverridesSelection(world, target, selection, actorsAt, cell, mi))
-				useSelect = target.Type == TargetType.Actor && target.Actor.Info.HasTraitInfo<ISelectableInfo>();
-			else
-			{
-				var ordersWithCursor = world.Selection.Actors
-					.Select(a => OrderForUnit(a, target, actorsAt, cell, mi))
-					.Where(o => o != null && o.Cursor != null);
-
-				var cursorOrder = ordersWithCursor.MaxByOrDefault(o => o.Order.OrderPriority);
-				if (cursorOrder != null)
-					return cursorOrder.Cursor;
-
-				useSelect = target.Type == TargetType.Actor && target.Actor.Info.HasTraitInfo<ISelectableInfo>() &&
-				    (mi.Modifiers.HasModifier(Modifiers.Shift) || !world.Selection.Actors.Any());
-			}
-
-			return useSelect ? "select" : "default";
+			return selection != null ? "select" : "default";
 		}
 
-		public void Deactivate() { }
-
-		bool IOrderGenerator.HandleKeyPress(KeyInput e) { return false; }
-
-		public bool TargetOverridesSelection(World world, CPos cell, int2 worldPixel, MouseInput mi)
+		public virtual bool TargetOverridesSelection(World world, int2 worldPixel, CPos cell, MouseInput mi, out string cursor)
 		{
+			cursor = null;
+
+			if (mi.Button != Game.Settings.Game.MouseButtonPreference.Action)
+				return false;
+
 			var target = world.Selection.TargetForInput(world, cell, worldPixel, mi);
-			var selection = world.Selection.SelectionForInput(world, cell, worldPixel, mi);
 			var actorsAt = world.ActorMap.GetActorsAt(cell).ToList();
-
-			return TargetOverridesSelection(world, target, selection, actorsAt, cell, mi);
-		}
-
-		// Used for classic mouse orders, determines whether or not action at xy is move or select
-		public virtual bool TargetOverridesSelection(World world, Target target, Actor selection, List<Actor> actorsAt, CPos cell, MouseInput mi)
-		{
-			// Always target if there is nothing to select
-			if (selection == null)
-				return true;
 
 			var modifiers = TargetModifiers.None;
 			if (mi.Modifiers.HasModifier(Modifiers.Ctrl))
@@ -99,22 +81,36 @@ namespace OpenRA.Orders
 				modifiers |= TargetModifiers.ForceMove;
 
 			// Targeting overrides selection if we can issue an order that requests it
+			var priority = int.MinValue;
 			foreach (var a in world.Selection.Actors)
 			{
-				var o = OrderForUnit(a, target, actorsAt, cell, mi);
-				if (o != null && o.Order.TargetOverridesSelection(a, target, actorsAt, cell, modifiers))
-					return true;
+				var o = OrderForUnit(a, target, actorsAt, cell, mi, modifiers);
+				if (o == null || o.Cursor == null)
+					continue;
+
+				if (Game.Settings.Game.UseClassicMouseStyle && !o.Order.TargetOverridesSelection(a, target, actorsAt, cell, modifiers))
+					continue;
+
+				if (o.Order.OrderPriority > priority)
+				{
+					priority = o.Order.OrderPriority;
+					cursor = o.Cursor;
+				}
 			}
 
-			return false;
+			return cursor != null;
 		}
+
+		public void Deactivate() { }
+
+		bool IOrderGenerator.HandleKeyPress(KeyInput e) { return false; }
 
 		/// <summary>
 		/// Returns the most appropriate order for a given actor and target.
 		/// First priority is given to orders that interact with the given actors.
 		/// Second priority is given to actors in the given cell.
 		/// </summary>
-		static UnitOrderResult OrderForUnit(Actor self, Target target, List<Actor> actorsAt, CPos xy, MouseInput mi)
+		static UnitOrderResult OrderForUnit(Actor self, Target target, List<Actor> actorsAt, CPos xy, MouseInput mi, TargetModifiers modifiers)
 		{
 			if (mi.Button != Game.Settings.Game.MouseButtonPreference.Action)
 				return null;
@@ -127,14 +123,6 @@ namespace OpenRA.Orders
 
 			if (self.Disposed || !target.IsValidFor(self))
 				return null;
-
-			var modifiers = TargetModifiers.None;
-			if (mi.Modifiers.HasModifier(Modifiers.Ctrl))
-				modifiers |= TargetModifiers.ForceAttack;
-			if (mi.Modifiers.HasModifier(Modifiers.Shift))
-				modifiers |= TargetModifiers.ForceQueue;
-			if (mi.Modifiers.HasModifier(Modifiers.Alt))
-				modifiers |= TargetModifiers.ForceMove;
 
 			// The Select(x => x) is required to work around an issue on mono 5.0
 			// where calling OrderBy* on SelectManySingleSelectorIterator can in some

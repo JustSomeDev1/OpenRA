@@ -57,14 +57,10 @@ namespace OpenRA.Orders
 			}
 		}
 
-		public override string GetCursor(World world, CPos cell, int2 worldPixel, MouseInput mi)
-		{
-			return world.Map.Contains(cell) ? Cursor : "generic-blocked";
-		}
-
-		public override bool TargetOverridesSelection(World world, Target target, Actor selection, List<Actor> actorsAt, CPos cell, MouseInput mi)
+		public override bool TargetOverridesSelection(World world, int2 worldPixel, CPos cell, MouseInput mi, out string cursor)
 		{
 			// Custom order generators always override selection
+			cursor = world.Map.Contains(cell) ? Cursor : "generic-blocked";
 			return true;
 		}
 
