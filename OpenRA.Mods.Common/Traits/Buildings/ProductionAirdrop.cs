@@ -9,6 +9,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using OpenRA.Activities;
 using OpenRA.Mods.Common.Activities;
@@ -28,7 +29,7 @@ namespace OpenRA.Mods.Common.Traits
 		[Desc("Cargo aircraft used for delivery. Must have the `Aircraft` trait.")]
 		public readonly string ActorType = null;
 
-		[Desc("The cargo aircraft will spawn at the player baseline (map edge closest to the player spawn)")]
+		[Desc("The cargo aircraft will spawn at the player baseline (map edge directly behind the player spawn)")]
 		public readonly bool BaselineSpawn = false;
 
 		[Desc("Direction the aircraft should face to land.")]
@@ -52,28 +53,31 @@ namespace OpenRA.Mods.Common.Traits
 			var map = owner.World.Map;
 			var aircraftInfo = self.World.Map.Rules.Actors[info.ActorType].TraitInfo<AircraftInfo>();
 
-			CPos startPos;
-			CPos endPos;
+			WPos startPos;
+			WPos endPos;
 			WAngle spawnFacing;
+
+			var bounds = map.Bounds;
+			var diagonalVec = map.ProjectedBottomRight - map.ProjectedTopLeft;
 
 			if (info.BaselineSpawn)
 			{
-				var bounds = map.Bounds;
-				var center = new MPos(bounds.Left + bounds.Width / 2, bounds.Top + bounds.Height / 2).ToCPos(map);
-				var spawnVec = owner.HomeLocation - center;
-				startPos = owner.HomeLocation + spawnVec * (Exts.ISqrt((bounds.Height * bounds.Height + bounds.Width * bounds.Width) / (4 * spawnVec.LengthSquared)));
+				var spawnPos = map.CenterOfCell(owner.HomeLocation);
+				var spawnVec = spawnPos - (map.ProjectedTopLeft + diagonalVec / 2);
+				startPos = spawnPos + map.DistanceToEdge(spawnPos, spawnVec).Length * spawnVec / spawnVec.Length;
 				endPos = startPos;
-				var spawnDirection = new WVec((self.Location - startPos).X, (self.Location - startPos).Y, 0);
-				spawnFacing = spawnDirection.Yaw;
+				spawnFacing = (self.CenterPosition - startPos).Yaw;
 			}
 			else
 			{
-				// Start a fixed distance away: the width of the map.
-				// This makes the production timing independent of spawnpoint
-				var loc = self.Location.ToMPos(map);
-				startPos = new MPos(loc.U + map.Bounds.Width, loc.V).ToCPos(map);
-				endPos = new MPos(map.Bounds.Left, loc.V).ToCPos(map);
+				// Start a fixed distance away: the longest straight line across the
+				// map at a given angle. This makes the production timing independent
+				// of spawnpoint.
 				spawnFacing = info.Facing;
+				var longestApproach = Math.Min(diagonalVec.Y * 1024 / spawnFacing.Cos(), diagonalVec.X * 1024 / spawnFacing.Sin());
+				var spawnVec = new WVec(0, -longestApproach, 0).Rotate(WRot.FromYaw(spawnFacing));
+				startPos = self.CenterPosition + spawnVec;
+				endPos = self.CenterPosition - spawnVec;
 			}
 
 			// Assume a single exit point for simplicity
@@ -92,7 +96,7 @@ namespace OpenRA.Mods.Common.Traits
 
 				var actor = w.CreateActor(info.ActorType, new TypeDictionary
 				{
-					new CenterPositionInit(w.Map.CenterOfCell(startPos) + new WVec(WDist.Zero, WDist.Zero, aircraftInfo.CruiseAltitude)),
+					new CenterPositionInit(startPos + new WVec(WDist.Zero, WDist.Zero, aircraftInfo.CruiseAltitude)),
 					new OwnerInit(owner),
 					new FacingInit(spawnFacing)
 				});
@@ -114,7 +118,7 @@ namespace OpenRA.Mods.Common.Traits
 					Game.Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", info.ReadyAudio, self.Owner.Faction.InternalName);
 				}));
 
-				actor.QueueActivity(new FlyOffMap(actor, Target.FromCell(w, endPos)));
+				actor.QueueActivity(new FlyOffMap(actor, Target.FromPos(endPos)));
 				actor.QueueActivity(new RemoveSelf());
 			});
 
