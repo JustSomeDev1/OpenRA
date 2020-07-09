@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using OpenRA.FileSystem;
 using OpenRA.Mods.Common.FileFormats;
+using OpenRA.Mods.Common.MapFormats;
 using OpenRA.Mods.Common.Traits;
 using OpenRA.Primitives;
 using OpenRA.Traits;
@@ -68,7 +69,7 @@ namespace OpenRA.Mods.Common.UtilityCommands
 				if (!ModData.DefaultTileSets.ContainsKey(tileset))
 					throw new InvalidDataException("Unknown tileset {0}".F(tileset));
 
-				Map = new Map(ModData, ModData.DefaultTileSets[tileset], MapSize, MapSize)
+				Map = new DefaultMap(ModData, ModData.DefaultTileSets[tileset], MapSize, MapSize)
 				{
 					Title = basic.GetValue("Name", Path.GetFileNameWithoutExtension(filename)),
 					Author = "Westwood Studios",
