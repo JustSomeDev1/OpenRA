@@ -1,5 +1,5 @@
 # Enforce LF normalization on Windows
-*.yaml eol=lf
+*.yaml eol=lf linguist-language=Text
 *.lua eol=lf
 *.cs eol=lf
 *.csproj eol=lf
