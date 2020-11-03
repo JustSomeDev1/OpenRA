@@ -99,8 +99,12 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 			var defaultUseTilesetExtension = false;
 			var defaultUseTilesetCode = false;
 			var defaultTilesetOverrides = new Dictionary<string, string>();
+			var explicitDefaultImage = false;
 			foreach (var defaults in sequenceNode.ChildrenMatching("Defaults"))
 			{
+				if (!string.IsNullOrEmpty(defaults.Value.Value))
+					explicitDefaultImage = true;
+
 				defaultImage = defaults.Value.Value ?? defaultImage;
 				var addExtensionNode = defaults.LastChildMatching("AddExtension");
 				if (addExtensionNode != null)
@@ -131,13 +135,16 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 
 					defaults.RemoveNode(tilesetOverridesNode);
 				}
+
+				if (defaultAddExtension && !string.IsNullOrEmpty(defaults.Value.Value))
+					defaults.ReplaceValue(defaults.Value.Value + defaultSpriteExtension);
 			}
 
 			foreach (var sequence in sequenceNode.Value.Nodes)
-				ProcessNode(modData, sequence, defaultImage, defaultAddExtension, defaultUseTilesetExtension, defaultUseTilesetCode, defaultTilesetOverrides);
+				ProcessNode(modData, sequence, defaultImage, explicitDefaultImage, defaultAddExtension, defaultUseTilesetExtension, defaultUseTilesetCode, defaultTilesetOverrides);
 		}
 
-		void ProcessNode(ModData modData, MiniYamlNode sequence, string defaultImage,
+		void ProcessNode(ModData modData, MiniYamlNode sequence, string defaultImage, bool explicitDefaultImage,
 			bool defaultAddExtension, bool defaultUseTilesetExtension, bool defaultUseTilesetCode,
 			Dictionary<string, string> defaultTilesetOverrides)
 		{
@@ -153,7 +160,7 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 				var i = 0;
 				foreach (var combine in combineNode.Value.Nodes)
 				{
-					ProcessNode(modData, combine, combine.Key ?? defaultImage, defaultAddExtension, defaultUseTilesetExtension, defaultUseTilesetCode, defaultTilesetOverrides);
+					ProcessNode(modData, combine, combine.Key ?? defaultImage, explicitDefaultImage, defaultAddExtension, defaultUseTilesetExtension, defaultUseTilesetCode, defaultTilesetOverrides);
 					combine.Key = (i++).ToString();
 				}
 
@@ -211,7 +218,6 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 			}
 
 			var imageNode = new MiniYamlNode("Image", addExtension ? sequenceImage + defaultSpriteExtension : sequenceImage);
-			sequence.AddNode(imageNode);
 			sequence.ReplaceValue("");
 
 			string firstTilesetImage = null;
@@ -235,6 +241,9 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 
 			if (firstTilesetImage != null)
 				imageNode.ReplaceValue(firstTilesetImage);
+
+			if (firstTilesetImage != null || !explicitDefaultImage)
+				sequence.AddNode(imageNode);
 		}
 	}
 }
