@@ -1,644 +1,688 @@
 fact:
-	build:
+	build: fact.shp
 		Start: 4
 		Length: 20
 		Tick: 100
-	idle:
+	idle: fact.shp
 		Length: 4
 		Tick: 100
-	damaged-idle:
+	damaged-idle: fact.shp
 		Start: 24
 		Length: 4
 		Tick: 100
-	damaged-build:
+	damaged-build: fact.shp
 		Start: 28
 		Length: 20
 		Tick: 100
-	dead:
+	dead: fact.shp
 		Start: 48
 		Tick: 800
-	make: factmake
+	make: factmake.shp
 		Length: *
 		Tick: 80
-	bib: bib2
-		UseTilesetExtension: true
+	bib:
 		Length: *
-	icon: facticnh
+		Image: bib2.des
+			DESERT: bib2.des
+			WINTER: bib2.win
+			SNOW: bib2.sno
+			TEMPERAT: bib2.tem
+			JUNGLE: bib2.jun
+	icon: facticnh.shp
 
 nuke:
-	idle:
+	idle: nuke.shp
 		Length: 4
 		Tick: 1000
-	damaged-idle:
+	damaged-idle: nuke.shp
 		Start: 4
 		Length: 4
 		Tick: 1000
-	dead:
+	dead: nuke.shp
 		Start: 8
 		Tick: 800
-	make: nukemake
+	make: nukemake.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: nukeicnh.tem
-		AddExtension: False
 
 proc:
-	idle:
+	idle: proc.shp
 		Length: 6
 		Tick: 120
 		Offset: 2,4
-	damaged-idle:
+	damaged-idle: proc.shp
 		Start: 30
 		Length: 6
 		Tick: 120
 		Offset: 2,4
-	dead:
+	dead: proc.shp
 		Start: 60
 		Tick: 800
 		Offset: 2,4
-	make: procmake
+	make: procmake.shp
 		Length: *
 		Tick: 80
 		Offset: 2,4
-	resources: proctwr
+	resources: proctwr.shp
 		Length: 6
 		Offset: -30,-17
-	damaged-resources: proctwr
+	damaged-resources: proctwr.shp
 		Start: 6
 		Length: 6
 		Offset: -30,-17
-	bib: bib2
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib2.des
+			DESERT: bib2.des
+			WINTER: bib2.win
+			SNOW: bib2.sno
+			TEMPERAT: bib2.tem
+			JUNGLE: bib2.jun
 	icon: procicnh.tem
-		AddExtension: False
 
 silo:
-	idle:
+	idle: silo.shp
 		Offset: 0,-1
-	damaged-idle:
+	damaged-idle: silo.shp
 		Start: 5
 		Offset: 0,-1
-	dead:
+	dead: silo.shp
 		Start: 10
 		Offset: 0,-1
 		Tick: 800
-	stages:
+	stages: silo.shp
 		Length: 5
 		Offset: 0,-1
-	damaged-stages:
+	damaged-stages: silo.shp
 		Start: 5
 		Length: 5
 		Offset: 0,-1
-	make: silomake
+	make: silomake.shp
 		Length: *
 		Tick: 80
 		Offset: 0,-1
-	bib: mbSILO
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,1
+		Image: mbSILO.des
+			DESERT: mbSILO.des
+			WINTER: mbSILO.tem
+			SNOW: mbSILO.tem
+			TEMPERAT: mbSILO.tem
+			JUNGLE: mbSILO.tem
 	icon: siloicnh.tem
-		AddExtension: False
 
 hand:
 	Defaults:
 		Offset: 0,-8
-	idle:
-	damaged-idle:
+	idle: hand.shp
+	damaged-idle: hand.shp
 		Start: 1
-	dead:
+	dead: hand.shp
 		Start: 2
 		Tick: 800
-	make: handmake
+	make: handmake.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
 		Offset: 0,0
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: handicnh.tem
-		AddExtension: False
 		Offset: 0,0
 
 pyle:
-	idle:
+	idle: pyle.shp
 		Length: 10
 		Tick: 100
-	damaged-idle:
+	damaged-idle: pyle.shp
 		Start: 10
 		Length: 10
 		Tick: 100
-	dead:
+	dead: pyle.shp
 		Start: 20
 		Tick: 800
-	make: pylemake
+	make: pylemake.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: pyleicnh.tem
-		AddExtension: False
 
 weap:
 	Defaults:
 		Offset: 0,-12
-	idle:
+	idle: weap.shp
 		ZOffset: -511
-	damaged-idle:
+	damaged-idle: weap.shp
 		Start: 1
 		ZOffset: -511
-	dead:
+	dead: weap.shp
 		Start: 2
 		Tick: 800
-	build-top: weap2
+	build-top: weap2.shp
 		Length: 10
 		ZOffset: -1024
-	damaged-build-top: weap2
+	damaged-build-top: weap2.shp
 		Start: 10
 		Length: 10
 		ZOffset: -1024
-	place: weapmake
+	place: weapmake.shp
 		Start: 19
-	make: weapmake
+	make: weapmake.shp
 		Length: *
 		Tick: 80
-	bib: bib2
-		UseTilesetExtension: true
+	bib:
 		Length: *
 		Offset: 0,0
+		Image: bib2.des
+			DESERT: bib2.des
+			WINTER: bib2.win
+			SNOW: bib2.sno
+			TEMPERAT: bib2.tem
+			JUNGLE: bib2.jun
 	icon: weapicnh.tem
-		AddExtension: False
 		Offset: 0,0
 
 afld:
-	idle:
+	idle: afld.shp
 		Tick: 120
 		ZOffset: -1023
-	damaged-idle:
+	damaged-idle: afld.shp
 		Start: 16
 		Tick: 120
 		ZOffset: -1023
-	active:
+	active: afld.shp
 		Length: 16
 		Tick: 120
 		ZOffset: -1023
-	damaged-active:
+	damaged-active: afld.shp
 		Start: 16
 		Length: 16
 		Tick: 120
 		ZOffset: -1023
-	idle-dish: afld_d
+	idle-dish: afld_d.shp
 		Length: 16
 		Tick: 160
-	damaged-idle-dish: afld_d
+	damaged-idle-dish: afld_d.shp
 		Start: 16
 		Length: 16
 		Tick: 160
-	dead:
+	dead: afld.shp
 		Start: 32
 		ZOffset: -1023
 		Tick: 800
-	make: afldmake
+	make: afldmake.shp
 		Length: *
 		Tick: 80
-	bib: bib1
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib1.des
+			DESERT: bib1.des
+			WINTER: bib1.win
+			SNOW: bib1.sno
+			TEMPERAT: bib1.tem
+			JUNGLE: bib1.jun
 	icon: afldicnh.tem
-		AddExtension: False
 
 hq:
-	idle:
+	idle: hq.shp
 		Length: 16
 		Tick: 100
-	damaged-idle:
+	damaged-idle: hq.shp
 		Start: 16
 		Length: 16
 		Tick: 100
-	dead:
+	dead: hq.shp
 		Start: 32
 		Tick: 800
-	make: hqmake
+	make: hqmake.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: hqicnh.tem
-		AddExtension: False
 
 nuk2:
-	idle:
+	idle: nuk2.shp
 		Length: 4
 		Tick: 1000
-	damaged-idle:
+	damaged-idle: nuk2.shp
 		Start: 4
 		Length: 4
 		Tick: 1000
-	dead:
+	dead: nuk2.shp
 		Start: 8
 		Tick: 800
-	make: nuk2make
+	make: nuk2make.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: nuk2icnh.tem
-		AddExtension: False
 
 hpad:
-	idle:
+	idle: hpad.shp
 		ZOffset: -1023
-	damaged-idle:
+	damaged-idle: hpad.shp
 		Start: 7
 		ZOffset: -1023
-	active:
+	active: hpad.shp
 		Start: 1
 		Length: 6
 		Tick: 100
 		ZOffset: -1023
-	damaged-active:
+	damaged-active: hpad.shp
 		Start: 8
 		Length: 6
 		Tick: 100
 		ZOffset: -1023
-	dead:
+	dead: hpad.shp
 		Start: 14
 		ZOffset: -1023
 		Tick: 800
-	make: hpadmake
+	make: hpadmake.shp
 		Length: *
 		Tick: 80
 	icon: hpadicnh.tem
-		AddExtension: False
 
 fix:
-	idle:
+	idle: fix.shp
 		ZOffset: -1c511
-	damaged-idle:
+	damaged-idle: fix.shp
 		Start: 7
 		ZOffset: -1c511
-	active:
+	active: fix.shp
 		Length: 7
 		ZOffset: -1c511
-	damaged-active:
+	damaged-active: fix.shp
 		Start: 7
 		Length: 7
 		ZOffset: -1c511
-	dead:
+	dead: fix.shp
 		Start: 14
 		ZOffset: -1c511
 		Tick: 800
-	make: fixmake
+	make: fixmake.shp
 		Length: 14
 		Tick: 60
-	bib: mbFIX
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,-9
+		Image: mbFIX.des
+			DESERT: mbFIX.des
+			WINTER: mbFIX.tem
+			SNOW: mbFIX.tem
+			TEMPERAT: mbFIX.tem
+			JUNGLE: mbFIX.tem
 	icon: fixicnh.tem
-		AddExtension: False
 
 eye:
-	idle:
+	idle: eye.shp
 		Length: 16
 		Tick: 100
-	damaged-idle:
+	damaged-idle: eye.shp
 		Start: 16
 		Length: 16
 		Tick: 100
-	dead:
+	dead: eye.shp
 		Start: 32
 		Tick: 800
-	make: eyemake
+	make: eyemake.shp
 		Length: *
 		Tick: 80
-	bib: bib3
-		UseTilesetExtension: true
+	bib:
 		Length: *
+		Image: bib3.des
+			DESERT: bib3.des
+			WINTER: bib3.win
+			SNOW: bib3.sno
+			TEMPERAT: bib3.tem
+			JUNGLE: bib3.jun
 	icon: eyeicnh.tem
-		AddExtension: False
 
 tmpl:
 	Defaults:
 		Offset: 0,-12
-	idle:
-	damaged-idle:
+	idle: tmpl.shp
+	damaged-idle: tmpl.shp
 		Start: 5
-	active:
+	active: tmpl.shp
 		Length: 5
 		Tick: 200
-	smoke: atomdoor
+	smoke: atomdoor.shp
 		Length: *
 		Offset: -1,-47
-	damaged-active:
+	damaged-active: tmpl.shp
 		Start: 5
 		Length: 5
-	dead:
+	dead: tmpl.shp
 		Start: 10
 		Tick: 800
-	make: tmplmake
+	make: tmplmake.shp
 		Length: *
 		Tick: 60
-	bib: bib2
-		UseTilesetExtension: true
+	bib:
 		Length: *
 		Offset: 0,0
+		Image: bib2.des
+			DESERT: bib2.des
+			WINTER: bib2.win
+			SNOW: bib2.sno
+			TEMPERAT: bib2.tem
+			JUNGLE: bib2.jun
 	icon: tmplicnh.tem
-		AddExtension: False
 		Offset: 0,0
 
 obli:
 	Defaults:
 		Offset: 0,-12
-	idle:
-	damaged-idle:
+	idle: obli.shp
+	damaged-idle: obli.shp
 		Start: 4
-	active:
+	active: obli.shp
 		Length: 4
 		Tick: 680
-	damaged-active:
+	damaged-active: obli.shp
 		Start: 4
 		Length: 4
 		Tick: 680
-	dead:
+	dead: obli.shp
 		Start: 8
 		Tick: 800
-	make: oblimake
+	make: oblimake.shp
 		Length: 13
 		Tick: 80
-	bib: mbOBLI
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: -1,-3
+		Image: mbOBLI.des
+			DESERT: mbOBLI.des
+			WINTER: mbOBLI.tem
+			SNOW: mbOBLI.tem
+			TEMPERAT: mbOBLI.tem
+			JUNGLE: mbOBLI.tem
 	icon: obliicnh.tem
-		AddExtension: False
 		Offset: 0,0
 
 brik:
-	idle:
+	idle: brik.shp
 		Length: 16
-	scratched-idle:
+	scratched-idle: brik.shp
 		Start: 16
 		Length: 16
-	damaged-idle:
+	damaged-idle: brik.shp
 		Start: 32
 		Length: 16
 	icon: brikicnh.tem
-		AddExtension: False
 
 sbag:
-	idle:
+	idle: sbag.shp
 		Length: 16
 	icon: sbagicnh.tem
-		AddExtension: False
 
 cycl:
-	idle:
+	idle: cycl.shp
 		Length: 16
-	damaged-idle:
+	damaged-idle: cycl.shp
 		Start: 16
 		Length: 16
 	icon: cyclicnh.tem
-		AddExtension: False
 
 barb:
-	idle:
+	idle: barb.shp
 		Length: 16
-	damaged-idle:
+	damaged-idle: barb.shp
 		Start: 16
 		Length: 16
 
 wood:
-	idle:
+	idle: wood.shp
 		Length: 16
-	damaged-idle:
+	damaged-idle: wood.shp
 		Start: 16
 		Length: 16
 
 gun:
-	idle: gunmake # Empty first frame. We need WithSpriteBody for the make anim, and WSB needs at least a placeholder default sequence to work
-	turret:
+	idle: gunmake.shp # Empty first frame. We need WithSpriteBody for the make anim, and WSB needs at least a placeholder default sequence to work
+	turret: gun.shp
 		Facings: 32
 		UseClassicFacings: True
-	recoil:
+	recoil: gun.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	damaged-turret:
+	damaged-turret: gun.shp
 		Start: 64
 		Facings: 32
 		UseClassicFacings: True
-	damaged-recoil:
+	damaged-recoil: gun.shp
 		Start: 96
 		Facings: 32
 		UseClassicFacings: True
-	make: gunmake
+	make: gunmake.shp
 		Length: *
 		Tick: 80
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
-	bib: mbGUN
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: -1,-1
+		Image: mbGUN.des
+			DESERT: mbGUN.des
+			WINTER: mbGUN.tem
+			SNOW: mbGUN.tem
+			TEMPERAT: mbGUN.tem
+			JUNGLE: mbGUN.tem
 	icon: gunicnh.tem
-		AddExtension: False
 
 sam:
-	closed-idle:
+	closed-idle: sam.shp
 		Start: 0
-	opening:
+	opening: sam.shp
 		Start: 1
 		Length: 16
 		Tick: 30
-	idle:
+	idle: sam.shp
 		Start: 17
 		Facings: 32
 		UseClassicFacings: True
-	closing:
+	closing: sam.shp
 		Start: 50
 		Length: 14
 		Tick: 30
-	damaged-closed-idle:
+	damaged-closed-idle: sam.shp
 		Start: 64
-	damaged-opening:
+	damaged-opening: sam.shp
 		Start: 65
 		Length: 16
 		Tick: 30
-	damaged-idle:
+	damaged-idle: sam.shp
 		Start: 81
 		Facings: 32
 		UseClassicFacings: True
-	damaged-closing:
+	damaged-closing: sam.shp
 		Start: 114
 		Length: 14
 		Tick: 30
-	dead:
+	dead: sam.shp
 		Start: 128
 		Tick: 800
-	place:
+	place: sam.shp
 		Start: 0
-	make: sammake
+	make: sammake.shp
 		Length: 20
 		Tick: 50
-	muzzle: samfire
+	muzzle: samfire.shp
 		Length: 18
 		Facings: 8
 	icon: samicnh.tem
-		AddExtension: False
 
 gtwr:
-	idle:
-	damaged-idle:
+	idle: gtwr.shp
+	damaged-idle: gtwr.shp
 		Start: 1
-	dead:
+	dead: gtwr.shp
 		Start: 2
 		Tick: 800
 	make:
 		Combine:
-			gtwrmake:
+			0: gtwrmake.shp
 				Length: 17
-			gtwrmake:
+			1: gtwrmake.shp
 				Start: 19
 		Length: 18
 		Tick: 80
-	muzzle: minigun
+	muzzle: minigun.shp
 		Length: 6
 		Facings: 8
-	bib: mbGTWR
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,-2
+		Image: mbGTWR.des
+			DESERT: mbGTWR.des
+			WINTER: mbGTWR.tem
+			SNOW: mbGTWR.tem
+			TEMPERAT: mbGTWR.tem
+			JUNGLE: mbGTWR.tem
 	icon: gtwricnh.tem
-		AddExtension: False
 
 atwr:
 	Defaults:
 		Offset: 0,-13
-	idle:
-	damaged-idle:
+	idle: atwr.shp
+	damaged-idle: atwr.shp
 		Start: 1
-	dead:
+	dead: atwr.shp
 		Start: 2
 		Tick: 800
-	make: atwrmake
+	make: atwrmake.shp
 		Length: *
 		Tick: 80
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
-	bib: mbGTWR
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: -3,0
+		Image: mbGTWR.des
+			DESERT: mbGTWR.des
+			WINTER: mbGTWR.tem
+			SNOW: mbGTWR.tem
+			TEMPERAT: mbGTWR.tem
+			JUNGLE: mbGTWR.tem
 	icon: atwricnh.tem
-		AddExtension: False
 		Offset: 0,0
 
 hosp:
-	idle:
+	idle: hosp.shp
 		Length: 4
 		Tick: 100
 		Offset: 0,-2
-	damaged-idle:
+	damaged-idle: hosp.shp
 		Start: 4
 		Length: 4
 		Offset: 0,-2
-	make: hospmake
+	make: hospmake.shp
 		Length: *
 		Tick: 80
 		Offset: 0,-2
-	bib: mbHOSP
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,1
+		Image: mbHOSP.des
+			DESERT: mbHOSP.des
+			WINTER: mbHOSP.tem
+			SNOW: mbHOSP.tem
+			TEMPERAT: mbHOSP.tem
+			JUNGLE: mbHOSP.tem
 
 hosp.husk:
-	idle: hosp
+	idle: hosp.shp
 		Start: 8
-	bib: mbHOSP
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,1
+		Image: mbHOSP.des
+			DESERT: mbHOSP.des
+			WINTER: mbHOSP.tem
+			SNOW: mbHOSP.tem
+			TEMPERAT: mbHOSP.tem
+			JUNGLE: mbHOSP.tem
 
 bio:
-	idle:
-	damaged-idle:
+	idle: bio.shp
+	damaged-idle: bio.shp
 		Start: 1
-	make: biomake
+	make: biomake.shp
 		Length: *
 		Tick: 80
 
 bio.husk:
-	idle: bio
+	idle: bio.shp
 		Start: 2
 
 miss:
-	idle:
+	idle: miss.shp
 		Offset: 0,-1
-	damaged-idle:
+	damaged-idle: miss.shp
 		Start: 1
 		Offset: 0,-1
-	make: missmake
+	make: missmake.shp
 		Length: *
 		Tick: 80
 		Offset: 0,-1
-	bib: mbMISS
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,1
-	icon: missicnh
+		Image: mbMISS.des
+			DESERT: mbMISS.des
+			WINTER: mbMISS.tem
+			SNOW: mbMISS.tem
+			TEMPERAT: mbMISS.tem
+			JUNGLE: mbMISS.tem
+	icon: missicnh.shp
 
 miss.husk:
-	idle: miss
+	idle: miss.shp
 		Start: 2
-	bib: mbMISS
-		UseTilesetExtension: true
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	bib:
 		Length: *
 		Offset: 0,1
+		Image: mbMISS.des
+			DESERT: mbMISS.des
+			WINTER: mbMISS.tem
+			SNOW: mbMISS.tem
+			TEMPERAT: mbMISS.tem
+			JUNGLE: mbMISS.tem

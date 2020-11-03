@@ -131,7 +131,7 @@ namespace OpenRA.Mods.Common.UpdateRules
 				if (mapSequencesNode != null)
 				{
 					var mapSequences = LoadInternalMapYaml(modData, mapPackage, mapSequencesNode.Value, externalFilenames);
-					manualSteps.AddRange(ApplyTopLevelTransform(modData, mapSequences, rule.UpdateWeaponNode));
+					manualSteps.AddRange(ApplyTopLevelTransform(modData, mapSequences, rule.UpdateSequenceNode));
 					files.AddRange(mapSequences);
 				}
 

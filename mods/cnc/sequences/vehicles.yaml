@@ -1,352 +1,338 @@
 mcv:
-	idle:
+	idle: mcv.shp
 		Facings: 32
 		UseClassicFacings: True
 	icon: mcvicnh.tem
-		AddExtension: False
 
 mcv.destroyed:
-	idle: mcv
+	idle: mcv.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 harv:
-	idle:
+	idle: harv.shp
 		Facings: 32
 		UseClassicFacings: True
-	harvest:
+	harvest: harv.shp
 		Start: 32
 		Length: 4
 		Facings: 8
 		Tick: 60
-	dock: harvdump
+	dock: harvdump.shp
 		Length: 7
-	dock-loop: harvdump
+	dock-loop: harvdump.shp
 		Start: 7
 	icon: harvicnh.tem
-		AddExtension: False
 
 harv.destroyed:
-	idle: harv
+	idle: harv.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 bggy:
-	idle:
+	idle: bggy.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: bggy.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: minigun
+	muzzle: minigun.shp
 		Length: 6
 		Facings: 8
 	icon: bggyicnh.tem
-		AddExtension: False
 
 bggy.destroyed:
-	idle: bggy
+	idle: bggy.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: bggy
+	turret: bggy.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 mtnk:
-	idle:
+	idle: mtnk.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: mtnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
 	icon: mtnkicnh.tem
-		AddExtension: False
 
 mtnk.destroyed:
-	idle: mtnk
+	idle: mtnk.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: mtnk
+	turret: mtnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 ltnk:
-	idle:
+	idle: ltnk.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: ltnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
 	icon: ltnkicnh.tem
-		AddExtension: False
 
 ltnk.destroyed:
-	idle: ltnk
+	idle: ltnk.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: ltnk
+	turret: ltnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 htnk:
-	idle:
+	idle: htnk.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: htnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
 	icon: htnkicnh.tem
-		AddExtension: False
 
 htnk.destroyed:
-	idle: htnk
+	idle: htnk.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: htnk
+	turret: htnk.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 jeep:
-	idle:
+	idle: jeep.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: jeep.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: minigun
+	muzzle: minigun.shp
 		Length: 6
 		Facings: 8
 	icon: jeepicnh.tem
-		AddExtension: False
 
 jeep.destroyed:
-	idle: jeep
+	idle: jeep.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: jeep
+	turret: jeep.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 bike:
-	idle:
+	idle: bike.shp
 		Facings: 32
 		UseClassicFacings: True
 	icon: bikeicnh.tem
-		AddExtension: False
 
 bike.destroyed:
-	idle: bike
+	idle: bike.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 ftnk:
-	idle:
+	idle: ftnk.shp
 		Facings: 32
 		UseClassicFacings: True
 	muzzle:
 		Combine:
-			flame-n:
+			0: flame-n.shp
 				Length: *
 				Offset: 3,6
-			flame-nw:
+			1: flame-nw.shp
 				Length: *
 				Offset: 8,7
-			flame-w:
+			2: flame-w.shp
 				Length: *
 				Offset: 8,2
-			flame-sw:
+			3: flame-sw.shp
 				Length: *
 				Offset: 7,-2
-			flame-s:
+			4: flame-s.shp
 				Length: *
 				Offset: 3,-2
-			flame-se:
+			5: flame-se.shp
 				Length: *
 				Offset: -5,-2
-			flame-e:
+			6: flame-e.shp
 				Length: *
 				Offset: -7,2
-			flame-ne:
+			7: flame-ne.shp
 				Length: *
 				Offset: -7,8
 		Facings: 8
 		Length: 13
 	icon: ftnkicnh.tem
-		AddExtension: False
 
 ftnk.destroyed:
-	idle: ftnk
+	idle: ftnk.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 mhq:
-	idle:
+	idle: mhq.shp
 		Facings: 32
 		UseClassicFacings: True
-	spinner:
+	spinner: mhq.shp
 		Start: 32
 		Length: 32
-	icon: mhqicnh
+	icon: mhqicnh.shp
 
 msam:
-	idle:
+	idle: msam.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: msam.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	empty-aim:
+	empty-aim: msam.shp
 		Start: 64
 		Facings: 32
 		UseClassicFacings: True
-	aim:
+	aim: msam.shp
 		Start: 64
 		Facings: 32
 		UseClassicFacings: True
 	icon: msamicnh.tem
-		AddExtension: False
 
 msam.destroyed:
-	idle: msam
+	idle: msam.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: msam
+	turret: msam.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 mlrs:
-	idle:
+	idle: mlrs.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret:
+	turret: mlrs.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
-	turret1:
+	turret1: mlrs.shp
 		Start: 64
 		Facings: 32
 		UseClassicFacings: True
-	turret0:
+	turret0: mlrs.shp
 		Start: 96
 		Facings: 32
 		UseClassicFacings: True
 	icon: mlrsicnh.tem
-		AddExtension: False
 
 mlrs.destroyed:
-	idle: mlrs
+	idle: mlrs.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: mlrs
+	turret: mlrs.shp
 		Start: 32
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 stnk:
-	idle:
+	idle: stnk.shp
 		Facings: 32
 		UseClassicFacings: True
 	icon: stnkicnh.tem
-		AddExtension: False
 
 stnk.destroyed:
-	idle: stnk
+	idle: stnk.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 arty:
-	idle:
+	idle: arty.shp
 		Facings: 32
 		UseClassicFacings: True
-	muzzle: gunfire2
+	muzzle: gunfire2.shp
 		Length: *
 	icon: artyicnh.tem
-		AddExtension: False
 
 arty.destroyed:
-	idle: arty
+	idle: arty.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
 
 apc:
-	idle:
+	idle: apc.shp
 		Facings: 32
 		UseClassicFacings: True
-	turret: apctur
+	turret: apctur.shp
 		Facings: 32
-	turret-air: apctur
+	turret-air: apctur.shp
 		Start: 32
 		Facings: 32
-	muzzle: minigun
+	muzzle: minigun.shp
 		Length: 6
 		Facings: 8
-	muzzle-air: apcmuz
+	muzzle-air: apcmuz.shp
 		Length: 3
 		Stride: 6
 		Facings: 8
-	close:
+	close: apc.shp
 		Start: 32
 		Length: 3
-	unload:
+	unload: apc.shp
 		Start: 32
 	icon: apcicnh.tem
-		AddExtension: False
 
 apc.destroyed:
-	idle: apc
+	idle: apc.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512
-	turret: apctur
+	turret: apctur.shp
 		Facings: 32
 		ZOffset: -512
 
 truck:
-	idle:
+	idle: truck.shp
 		Facings: 32
 		UseClassicFacings: True
-	icon: truckicon
+	icon: truckicon.shp
 
 truck.destroyed:
-	idle: truck
+	idle: truck.shp
 		Facings: 32
 		UseClassicFacings: True
 		ZOffset: -512

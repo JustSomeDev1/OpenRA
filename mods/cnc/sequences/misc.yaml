@@ -1,104 +1,104 @@
 fb4:
-	idle:
+	idle: fb4.shp
 		Length: 4
 		ZOffset: 1023
 
 fire:
-	1: fire1
+	1: fire1.shp
 		Length: *
 		Offset: 0,-3
 		ZOffset: 1023
-	2: fire2
+	2: fire2.shp
 		Length: *
 		Offset: 0,-3
 		ZOffset: 1023
 
 burn-l:
-	idle:
+	idle: burn-l.shp
 		Length: *
 		ZOffset: 512
-	loop:
+	loop: burn-l.shp
 		Start: 16
 		Length: 44
 		ZOffset: 512
-	end:
+	end: burn-l.shp
 		Start: 60
 		Length: 6
 		ZOffset: 512
 
 burn-m:
-	idle:
+	idle: burn-m.shp
 		Length: *
 		ZOffset: 512
-	loop:
+	loop: burn-m.shp
 		Start: 16
 		Length: 44
 		ZOffset: 512
-	end:
+	end: burn-m.shp
 		Start: 60
 		Length: 6
 		ZOffset: 512
 
 burn-s:
-	idle:
+	idle: burn-s.shp
 		Length: *
 		ZOffset: 512
-	loop:
+	loop: burn-s.shp
 		Start: 12
 		Length: 46
 		ZOffset: 512
-	end:
+	end: burn-s.shp
 		Start: 59
 		Length: 5
 		ZOffset: 512
 
 120mm:
-	idle:
+	idle: 120mm.shp
 		ZOffset: 1023
 
 smoke_m:
-	idle:
+	idle: smoke_m.shp
 		Length: *
 		Offset: 2, -5
 		ZOffset: 512
-	loop:
+	loop: smoke_m.shp
 		Start: 49
 		Length: 42
 		Offset: 2, -5
 		ZOffset: 512
-	end:
+	end: smoke_m.shp
 		Start: 26
 		Length: -26
 		Offset: 2, -5
 		ZOffset: 512
 
 laserfire:
-	idle: veh-hit3
+	idle: veh-hit3.shp
 		Length: *
 		ZOffset: 511
 
 dragon:
-	idle:
+	idle: dragon.shp
 		Facings: 32
 		ZOffset: 1023
 
 smokey:
-	idle:
+	idle: smokey.shp
 		Length: *
 		ZOffset: 1023
 
 bomb:
-	idle:
+	idle: bomb.shp
 		Length: *
 		ZOffset: 1023
 
 missile:
-	idle:
+	idle: missile.shp
 		Facings: 32
 		ZOffset: 1023
 
 patriot:
-	idle:
+	idle: patriot.shp
 		Facings: 32
 		ZOffset: 1023
 
@@ -106,99 +106,99 @@ explosion:
 	Defaults:
 		Length: *
 		ZOffset: 2047
-	nuke_explosion: atomsfx
-	piff: piff
-	piffs: piffpiff
-	chemball: chemball
-	small_napalm: napalm1
-	med_napalm: napalm2
-	big_napalm: napalm3
-	small_frag: veh-hit3
-	med_frag: frag1
-	big_frag: frag3
-	small_poof: veh-hit2
-	poof: art-exp1
-	small_building: veh-hit1
-	building: fball1
-	building_napalm: napalm2
+	nuke_explosion: atomsfx.shp
+	piff: piff.shp
+	piffs: piffpiff.shp
+	chemball: chemball.shp
+	small_napalm: napalm1.shp
+	med_napalm: napalm2.shp
+	big_napalm: napalm3.shp
+	small_frag: veh-hit3.shp
+	med_frag: frag1.shp
+	big_frag: frag3.shp
+	small_poof: veh-hit2.shp
+	poof: art-exp1.shp
+	small_building: veh-hit1.shp
+	building: fball1.shp
+	building_napalm: napalm2.shp
 		FlipX: true
 
 rank:
 	Defaults:
 		Offset: 0, 3
-	rank-veteran-1:
-	rank-veteran-2:
+	rank-veteran-1: rank.shp
+	rank-veteran-2: rank.shp
 		Start: 1
-	rank-veteran-3:
+	rank-veteran-3: rank.shp
 		Start: 2
-	rank-elite:
+	rank-elite: rank.shp
 		Start: 3
 		Offset: 1, 3
 
 rallypoint:
-	flag: flagfly
+	flag: flagfly.shp
 		Length: *
 		Offset: 10,-5
 		ZOffset: 2535
-	circles: fpls
+	circles: fpls.shp
 		Length: *
 		ZOffset: 2047
 
 beacon:
 	Defaults:
 		ZOffset: 2535
-	arrow: mouse2
+	arrow: mouse2.shp
 		Start: 5
 		Offset: 1,-12
-	circles: fpls
+	circles: fpls.shp
 		Length: *
 		ZOffset: 2047
-	airstrike: bombicon
+	airstrike: bombicon.shp
 		Offset: 0,-42
-	atomic: atomicon
+	atomic: atomicon.shp
 		Offset: 0,-42
-	clock: beaconclock
+	clock: beaconclock.shp
 		Length: *
 		Offset: 0,-42
 
 select:
-	repair:
+	repair: select.shp
 		Start: 2
 
 allyrepair:
-	repair:
+	repair: allyrepair.shp
 		Length: *
 		Tick: 160
 		ZOffset: 2047
 
 crate:
-	idle:
+	idle: crate.shp
 		ZOffset: -511
 
 scrate:
-	idle:
+	idle: scrate.shp
 		ZOffset: -511
 
 wcrate:
-	idle:
+	idle: wcrate.shp
 		ZOffset: -511
 
 xcratea:
-	idle: xcrate
+	idle: xcrate.shp
 		ZOffset: -511
 
 xcrateb:
-	idle: xcrate
+	idle: xcrate.shp
 		Start: 1
 		ZOffset: -511
 
 xcratec:
-	idle: xcrate
+	idle: xcrate.shp
 		Start: 2
 		ZOffset: -511
 
 xcrated:
-	idle: xcrate
+	idle: xcrate.shp
 		Start: 3
 		ZOffset: -511
 
@@ -206,78 +206,77 @@ crate-effects:
 	Defaults:
 		Length: *
 		ZOffset: 2047
-	airstrike: deviator
-	nuke: missile2
-	dollar: dollar
-	reveal-map: radarcrate
-	hide-map: empulse
-	heal: healcrate
-	mine: mine
-	redskull: rapid
-	cloak: cloakcrate
-	levelup: levelup
+	airstrike: deviator.shp
+	nuke: missile2.shp
+	dollar: dollar.shp
+	reveal-map: radarcrate.shp
+	hide-map: empulse.shp
+	heal: healcrate.shp
+	mine: mine.shp
+	redskull: rapid.shp
+	cloak: cloakcrate.shp
+	levelup: levelup.shp
 		Tick: 200
-	firepowerup: firepowercrate
-	armorup: armorcrate
-	speedup: speedcrate
+	firepowerup: firepowercrate.shp
+	armorup: armorcrate.shp
+	speedup: speedcrate.shp
 
 atomic:
 	Defaults:
 		Length: *
 		ZOffset: 1023
-	up: atomicup
-	down: atomicdn
+	up: atomicup.shp
+	down: atomicdn.shp
 
 ionsfx:
-	idle:
+	idle: ionsfx.shp
 		Length: *
 		Offset: 0, -78
 		ZOffset: 1023
 
 bomblet:
-	idle:
+	idle: bomblet.shp
 		Length: *
 		ZOffset: 1023
 
 mpspawn:
-	idle:
+	idle: mpspawn.shp
 		Length: *
 
 waypoint:
-	idle:
+	idle: waypoint.shp
 		Length: *
 
 camera:
-	idle:
+	idle: camera.shp
 		Length: *
 
 clock:
-	idle: hclock
+	idle: hclock.shp
 		Length: *
 
 pips:
-	pip-empty:
-	pip-green:
+	pip-empty: pips.shp
+	pip-green: pips.shp
 		Start: 1
-	pip-yellow:
+	pip-yellow: pips.shp
 		Start: 2
-	pip-gray:
+	pip-gray: pips.shp
 		Start: 3
-	pip-red:
+	pip-red: pips.shp
 		Start: 4
-	pip-blue:
+	pip-blue: pips.shp
 		Start: 5
-	pip-heal: pip-heal
+	pip-heal: pip-heal.shp
 		Offset: -1, 1
-	groups: pdigits
+	groups: pdigits.shp
 		Length: *
 		Offset: 9, 5
-	pip-hazmat: pip-hazmat
+	pip-hazmat: pip-hazmat.shp
 		Offset: -3, 0
 
 overlay:
 	Defaults: trans.icn
-		AddExtension: False
 	build-valid:
 	build-invalid:
 		Start: 2
@@ -289,188 +288,351 @@ overlay:
 
 editor-overlay:
 	Defaults: trans.icn
-		AddExtension: False
 	copy:
 	paste:
 		Start: 2
 
 poweroff:
-	offline:
+	offline: poweroff.shp
 		Length: *
 		Tick: 160
 		ZOffset: 2047
 
 icon:
 	Defaults:
-		AddExtension: False
 	airstrike: bombicnh.tem
 	ioncannon: ionicnh.tem
 	abomb: atomicnh.tem
 
 moveflsh:
-	idle:
+	idle: moveflsh.shp
 		Length: *
 		Tick: 80
 		ZOffset: 2047
 
 resources:
 	Defaults:
-		UseTilesetExtension: true
 		Length: *
-	ti1: ti1
-	ti2: ti2
-	ti3: ti3
-	ti4: ti4
-	ti5: ti5
-	ti6: ti6
-	ti7: ti7
-	ti8: ti8
-	ti9: ti9
-	ti10: ti10
-	ti11: ti11
-	ti12: ti12
-	bti1: rtib1
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti2: rtib2
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti3: rtib3
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti4: rtib4
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti5: rtib5
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti6: rtib6
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti7: rtib7
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti8: rtib8
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti9: rtib9
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti10: rtib10
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti11: rtib11
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
-	bti12: rtib12
-		TilesetOverrides:
-			WINTER: TEMPERAT
-			JUNGLE: TEMPERAT
-			SNOW: TEMPERAT
+	ti1:
+		Image: ti1.des
+			DESERT: ti1.des
+			WINTER: ti1.win
+			SNOW: ti1.sno
+			TEMPERAT: ti1.tem
+			JUNGLE: ti1.jun
+	ti2:
+		Image: ti2.des
+			DESERT: ti2.des
+			WINTER: ti2.win
+			SNOW: ti2.sno
+			TEMPERAT: ti2.tem
+			JUNGLE: ti2.jun
+	ti3:
+		Image: ti3.des
+			DESERT: ti3.des
+			WINTER: ti3.win
+			SNOW: ti3.sno
+			TEMPERAT: ti3.tem
+			JUNGLE: ti3.jun
+	ti4:
+		Image: ti4.des
+			DESERT: ti4.des
+			WINTER: ti4.win
+			SNOW: ti4.sno
+			TEMPERAT: ti4.tem
+			JUNGLE: ti4.jun
+	ti5:
+		Image: ti5.des
+			DESERT: ti5.des
+			WINTER: ti5.win
+			SNOW: ti5.sno
+			TEMPERAT: ti5.tem
+			JUNGLE: ti5.jun
+	ti6:
+		Image: ti6.des
+			DESERT: ti6.des
+			WINTER: ti6.win
+			SNOW: ti6.sno
+			TEMPERAT: ti6.tem
+			JUNGLE: ti6.jun
+	ti7:
+		Image: ti7.des
+			DESERT: ti7.des
+			WINTER: ti7.win
+			SNOW: ti7.sno
+			TEMPERAT: ti7.tem
+			JUNGLE: ti7.jun
+	ti8:
+		Image: ti8.des
+			DESERT: ti8.des
+			WINTER: ti8.win
+			SNOW: ti8.sno
+			TEMPERAT: ti8.tem
+			JUNGLE: ti8.jun
+	ti9:
+		Image: ti9.des
+			DESERT: ti9.des
+			WINTER: ti9.win
+			SNOW: ti9.sno
+			TEMPERAT: ti9.tem
+			JUNGLE: ti9.jun
+	ti10:
+		Image: ti10.des
+			DESERT: ti10.des
+			WINTER: ti10.win
+			SNOW: ti10.sno
+			TEMPERAT: ti10.tem
+			JUNGLE: ti10.jun
+	ti11:
+		Image: ti11.des
+			DESERT: ti11.des
+			WINTER: ti11.win
+			SNOW: ti11.sno
+			TEMPERAT: ti11.tem
+			JUNGLE: ti11.jun
+	ti12:
+		Image: ti12.des
+			DESERT: ti12.des
+			WINTER: ti12.win
+			SNOW: ti12.sno
+			TEMPERAT: ti12.tem
+			JUNGLE: ti12.jun
+	bti1:
+		Image: rtib1.des
+			DESERT: rtib1.des
+			WINTER: rtib1.tem
+			SNOW: rtib1.tem
+			TEMPERAT: rtib1.tem
+			JUNGLE: rtib1.tem
+	bti2:
+		Image: rtib2.des
+			DESERT: rtib2.des
+			WINTER: rtib2.tem
+			SNOW: rtib2.tem
+			TEMPERAT: rtib2.tem
+			JUNGLE: rtib2.tem
+	bti3:
+		Image: rtib3.des
+			DESERT: rtib3.des
+			WINTER: rtib3.tem
+			SNOW: rtib3.tem
+			TEMPERAT: rtib3.tem
+			JUNGLE: rtib3.tem
+	bti4:
+		Image: rtib4.des
+			DESERT: rtib4.des
+			WINTER: rtib4.tem
+			SNOW: rtib4.tem
+			TEMPERAT: rtib4.tem
+			JUNGLE: rtib4.tem
+	bti5:
+		Image: rtib5.des
+			DESERT: rtib5.des
+			WINTER: rtib5.tem
+			SNOW: rtib5.tem
+			TEMPERAT: rtib5.tem
+			JUNGLE: rtib5.tem
+	bti6:
+		Image: rtib6.des
+			DESERT: rtib6.des
+			WINTER: rtib6.tem
+			SNOW: rtib6.tem
+			TEMPERAT: rtib6.tem
+			JUNGLE: rtib6.tem
+	bti7:
+		Image: rtib7.des
+			DESERT: rtib7.des
+			WINTER: rtib7.tem
+			SNOW: rtib7.tem
+			TEMPERAT: rtib7.tem
+			JUNGLE: rtib7.tem
+	bti8:
+		Image: rtib8.des
+			DESERT: rtib8.des
+			WINTER: rtib8.tem
+			SNOW: rtib8.tem
+			TEMPERAT: rtib8.tem
+			JUNGLE: rtib8.tem
+	bti9:
+		Image: rtib9.des
+			DESERT: rtib9.des
+			WINTER: rtib9.tem
+			SNOW: rtib9.tem
+			TEMPERAT: rtib9.tem
+			JUNGLE: rtib9.tem
+	bti10:
+		Image: rtib10.des
+			DESERT: rtib10.des
+			WINTER: rtib10.tem
+			SNOW: rtib10.tem
+			TEMPERAT: rtib10.tem
+			JUNGLE: rtib10.tem
+	bti11:
+		Image: rtib11.des
+			DESERT: rtib11.des
+			WINTER: rtib11.tem
+			SNOW: rtib11.tem
+			TEMPERAT: rtib11.tem
+			JUNGLE: rtib11.tem
+	bti12:
+		Image: rtib12.des
+			DESERT: rtib12.des
+			WINTER: rtib12.tem
+			SNOW: rtib12.tem
+			TEMPERAT: rtib12.tem
+			JUNGLE: rtib12.tem
 
 shroud:
 	Defaults:
 		Length: 12
-	typea: shadow
-	typeb: shadow
+	typea: shadow.shp
+	typeb: shadow.shp
 		Start: 12
-	typec: shadow
+	typec: shadow.shp
 		Start: 24
-	typed: shadow
+	typed: shadow.shp
 		Start: 36
-	full: fullshroud
+	full: fullshroud.shp
 		Length: 1
 
 # Note: The order of smudges and craters determines
 # the index that is mapped to them in maps
 scorches:
 	Defaults:
-		UseTilesetExtension: true
 		Length: *
-	sc1: sc1
-	sc2: sc2
-	sc3: sc3
-	sc4: sc4
-	sc5: sc5
-	sc6: sc6
+	sc1:
+		Image: sc1.des
+			DESERT: sc1.des
+			WINTER: sc1.win
+			SNOW: sc1.sno
+			TEMPERAT: sc1.tem
+			JUNGLE: sc1.jun
+	sc2:
+		Image: sc2.des
+			DESERT: sc2.des
+			WINTER: sc2.win
+			SNOW: sc2.sno
+			TEMPERAT: sc2.tem
+			JUNGLE: sc2.jun
+	sc3:
+		Image: sc3.des
+			DESERT: sc3.des
+			WINTER: sc3.win
+			SNOW: sc3.sno
+			TEMPERAT: sc3.tem
+			JUNGLE: sc3.jun
+	sc4:
+		Image: sc4.des
+			DESERT: sc4.des
+			WINTER: sc4.win
+			SNOW: sc4.sno
+			TEMPERAT: sc4.tem
+			JUNGLE: sc4.jun
+	sc5:
+		Image: sc5.des
+			DESERT: sc5.des
+			WINTER: sc5.win
+			SNOW: sc5.sno
+			TEMPERAT: sc5.tem
+			JUNGLE: sc5.jun
+	sc6:
+		Image: sc6.des
+			DESERT: sc6.des
+			WINTER: sc6.win
+			SNOW: sc6.sno
+			TEMPERAT: sc6.tem
+			JUNGLE: sc6.jun
 
 craters:
 	Defaults:
-		UseTilesetExtension: true
 		Length: *
-	cr1: cr1
-	cr2: cr2
-	cr3: cr3
-	cr4: cr4
-	cr5: cr5
-	cr6: cr6
+	cr1:
+		Image: cr1.des
+			DESERT: cr1.des
+			WINTER: cr1.win
+			SNOW: cr1.sno
+			TEMPERAT: cr1.tem
+			JUNGLE: cr1.jun
+	cr2:
+		Image: cr2.des
+			DESERT: cr2.des
+			WINTER: cr2.win
+			SNOW: cr2.sno
+			TEMPERAT: cr2.tem
+			JUNGLE: cr2.jun
+	cr3:
+		Image: cr3.des
+			DESERT: cr3.des
+			WINTER: cr3.win
+			SNOW: cr3.sno
+			TEMPERAT: cr3.tem
+			JUNGLE: cr3.jun
+	cr4:
+		Image: cr4.des
+			DESERT: cr4.des
+			WINTER: cr4.win
+			SNOW: cr4.sno
+			TEMPERAT: cr4.tem
+			JUNGLE: cr4.jun
+	cr5:
+		Image: cr5.des
+			DESERT: cr5.des
+			WINTER: cr5.win
+			SNOW: cr5.sno
+			TEMPERAT: cr5.tem
+			JUNGLE: cr5.jun
+	cr6:
+		Image: cr6.des
+			DESERT: cr6.des
+			WINTER: cr6.win
+			SNOW: cr6.sno
+			TEMPERAT: cr6.tem
+			JUNGLE: cr6.jun
 
 smokland:
-	open:
+	open: smokland.shp
 		Length: 72
 		Tick: 120
 		ZOffset: 1023
-	idle:
+	idle: smokland.shp
 		Start: 72
 		Length: 20
 		Tick: 120
 		ZOffset: 1023
 
 airstrikedirection:
-	arrow-t: mouse2
+	arrow-t: mouse2.shp
 		Start: 1
 		Y: -12
 		Offset: 0, -15, 0
-	arrow-tr: mouse2
+	arrow-tr: mouse2.shp
 		Start: 2
 		X: 14
 		Y: -12
 		Offset: 7, -7, 0
-	arrow-r: mouse2
+	arrow-r: mouse2.shp
 		Start: 3
 		X: 14
 		Offset: 12, 0, 0
-	arrow-br: mouse2
+	arrow-br: mouse2.shp
 		Start: 4
 		X: 14
 		Y: 11
 		Offset: 7, 7, 0
-	arrow-b: mouse2
+	arrow-b: mouse2.shp
 		Start: 5
 		Y: 11
 		Offset: 0, 15, 0
-	arrow-bl: mouse2
+	arrow-bl: mouse2.shp
 		Start: 6
 		X: -15
 		Y: 11
 		Offset: -7, 7, 0
-	arrow-l: mouse2
+	arrow-l: mouse2.shp
 		Start: 7
 		X: -15
 		Offset: -12, 0, 0
-	arrow-tl: mouse2
+	arrow-tl: mouse2.shp
 		Start: 8
 		X: -15
 		Y: -12

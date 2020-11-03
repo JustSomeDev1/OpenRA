@@ -17,23 +17,8 @@ namespace OpenRA.Mods.Cnc.Graphics
 {
 	public class ClassicTilesetSpecificSpriteSequenceLoader : ClassicSpriteSequenceLoader
 	{
-		public readonly string DefaultSpriteExtension = ".shp";
-		public readonly Dictionary<string, string> TilesetExtensions = new Dictionary<string, string>();
-		public readonly Dictionary<string, string> TilesetCodes = new Dictionary<string, string>();
-
 		public ClassicTilesetSpecificSpriteSequenceLoader(ModData modData)
-			: base(modData)
-		{
-			var metadata = modData.Manifest.Get<SpriteSequenceFormat>().Metadata;
-			if (metadata.TryGetValue("DefaultSpriteExtension", out var yaml))
-				DefaultSpriteExtension = yaml.Value;
-
-			if (metadata.TryGetValue("TilesetExtensions", out yaml))
-				TilesetExtensions = yaml.ToDictionary(kv => kv.Value);
-
-			if (metadata.TryGetValue("TilesetCodes", out yaml))
-				TilesetCodes = yaml.ToDictionary(kv => kv.Value);
-		}
+			: base(modData) { }
 
 		public override ISpriteSequence CreateSequence(ModData modData, string tileSet, SpriteCache cache, string sequence, string animation, MiniYaml info)
 		{
@@ -46,41 +31,16 @@ namespace OpenRA.Mods.Cnc.Graphics
 		public ClassicTilesetSpecificSpriteSequence(ModData modData, string tileSet, SpriteCache cache, ISpriteSequenceLoader loader, string sequence, string animation, MiniYaml info)
 			: base(modData, tileSet, cache, loader, sequence, animation, info) { }
 
-		string ResolveTilesetId(string tileSet, Dictionary<string, MiniYaml> d)
-		{
-			if (d.TryGetValue("TilesetOverrides", out var yaml))
-			{
-				var tsNode = yaml.Nodes.FirstOrDefault(n => n.Key == tileSet);
-				if (tsNode != null)
-					tileSet = tsNode.Value.Value;
-			}
-
-			return tileSet;
-		}
-
 		protected override string GetSpriteSrc(ModData modData, string tileSet, string sequence, string animation, string sprite, Dictionary<string, MiniYaml> d)
 		{
-			var loader = (ClassicTilesetSpecificSpriteSequenceLoader)Loader;
-
-			var spriteName = sprite ?? sequence;
-
-			if (LoadField(d, "UseTilesetCode", false))
+			if (d.TryGetValue("Image", out var imageNode))
 			{
-				if (loader.TilesetCodes.TryGetValue(ResolveTilesetId(tileSet, d), out var code))
-					spriteName = spriteName.Substring(0, 1) + code + spriteName.Substring(2, spriteName.Length - 2);
+				var image = imageNode.Nodes.FirstOrDefault(n => n.Key == tileSet)?.Value.Value ?? imageNode.Value;
+				if (!string.IsNullOrEmpty(image))
+					return image;
 			}
 
-			if (LoadField(d, "AddExtension", true))
-			{
-				var useTilesetExtension = LoadField(d, "UseTilesetExtension", false);
-
-				if (useTilesetExtension && loader.TilesetExtensions.TryGetValue(ResolveTilesetId(tileSet, d), out var tilesetExtension))
-					return spriteName + tilesetExtension;
-
-				return spriteName + loader.DefaultSpriteExtension;
-			}
-
-			return spriteName;
+			return base.GetSpriteSrc(modData, tileSet, sequence, animation, sprite, d);
 		}
 	}
 }

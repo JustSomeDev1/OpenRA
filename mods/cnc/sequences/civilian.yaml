@@ -1,50 +1,50 @@
 c1:
-	stand:
+	stand: c1.shp
 		Facings: 8
-	panic-stand:
+	panic-stand: c1.shp
 		Facings: 8
-	panic-run:
+	panic-run: c1.shp
 		Start: 8
 		Length: 6
 		Facings: 8
-	run:
+	run: c1.shp
 		Start: 56
 		Length: 6
 		Facings: 8
-	shoot:
+	shoot: c1.shp
 		Start: 205
 		Length: 4
 		Facings: 8
-	cheer:
+	cheer: c1.shp
 		Start: 200
 		Length: 3
 		Facings: 8
 		Tick: 120
-	die1:
+	die1: c1.shp
 		Start: 329
 		Length: 8
 		Tick: 80
-	die2:
+	die2: c1.shp
 		Start: 337
 		Length: 8
 		Tick: 80
-	die3:
+	die3: c1.shp
 		Start: 337
 		Length: 8
 		Tick: 80
-	die4:
+	die4: c1.shp
 		Start: 345
 		Length: 12
 		Tick: 80
-	die5:
+	die5: c1.shp
 		Start: 357
 		Length: 18
 		Tick: 80
-	die6:
+	die6: c1.shp
 		Start: 182
 		Length: 4
 		Tick: 80
-	die-crushed: e1rot
+	die-crushed: e1rot.shp
 		Start: 16
 		Length: 4
 		Tick: 1600
@@ -82,40 +82,40 @@ delphi:
 moebius:
 	Defaults:
 		Tick: 80
-	stand:
+	stand: moebius.shp
 		Facings: 8
-	panic-stand:
+	panic-stand: moebius.shp
 		Facings: 8
-	panic-run:
+	panic-run: moebius.shp
 		Start: 8
 		Length: 6
 		Facings: 8
-	run:
+	run: moebius.shp
 		Start: 56
 		Length: 6
 		Facings: 8
-	idle1:
+	idle1: moebius.shp
 		Start: 104
 		Length: 15
-	die1:
+	die1: moebius.shp
 		Start: 212
 		Length: 8
-	die2:
+	die2: moebius.shp
 		Start: 220
 		Length: 8
-	die3:
+	die3: moebius.shp
 		Start: 220
 		Length: 8
-	die4:
+	die4: moebius.shp
 		Start: 228
 		Length: 12
-	die5:
+	die5: moebius.shp
 		Start: 240
 		Length: 17
-	die6:
+	die6: moebius.shp
 		Start: 214
 		Length: 3
-	die-crushed: e1rot
+	die-crushed: e1rot.shp
 		Start: 16
 		Length: 4
 		Tick: 1600

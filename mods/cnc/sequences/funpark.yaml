@@ -1,75 +1,75 @@
 steg:
-	stand:
+	stand: steg.shp
 		Facings: 8
-	stand2:
+	stand2: steg.shp
 		Start: 8
 		Facings: 8
-	run:
+	run: steg.shp
 		Start: 16
 		Length: 8
 		Facings: 8
-	attack:
+	attack: steg.shp
 		Start: 80
 		Length: 12
 		Facings: 8
-	die:
+	die: steg.shp
 		Start: 176
 		Length: 22
-	icon: stegicnh
+	icon: stegicnh.shp
 
 trex:
-	stand:
+	stand: trex.shp
 		Facings: 8
-	stand2:
+	stand2: trex.shp
 		Start: 8
 		Facings: 8
-	run:
+	run: trex.shp
 		Start: 16
 		Length: 8
 		Facings: 8
-	attack:
+	attack: trex.shp
 		Start: 80
 		Length: 8
 		Facings: 8
-	die:
+	die: trex.shp
 		Start: 144
 		Length: 40
-	icon: trexicnh
+	icon: trexicnh.shp
 
 tric:
-	stand:
+	stand: tric.shp
 		Facings: 8
-	stand2:
+	stand2: tric.shp
 		Start: 8
 		Facings: 8
-	run:
+	run: tric.shp
 		Start: 16
 		Length: 8
 		Facings: 8
-	attack:
+	attack: tric.shp
 		Start: 80
 		Length: 12
 		Facings: 8
-	die:
+	die: tric.shp
 		Start: 176
 		Length: 20
-	icon: tricicnh
+	icon: tricicnh.shp
 
 rapt:
-	stand:
+	stand: rapt.shp
 		Facings: 8
-	stand2:
+	stand2: rapt.shp
 		Start: 8
 		Facings: 8
-	run:
+	run: rapt.shp
 		Start: 16
 		Length: 8
 		Facings: 8
-	attack:
+	attack: rapt.shp
 		Start: 80
 		Length: 8
 		Facings: 8
-	die:
+	die: rapt.shp
 		Start: 144
 		Length: 40
-	icon: rapticnh
+	icon: rapticnh.shp

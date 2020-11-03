@@ -287,7 +287,7 @@ namespace OpenRA.Mods.Common.Graphics
 							return subFrames != null ? subFrames.Skip(subStart).Take(subLength) : Enumerable.Range(subStart, subLength);
 						};
 
-						var subSrc = GetSpriteSrc(modData, tileSet, sequence, animation, sub.Key, sd);
+						var subSrc = GetSpriteSrc(modData, tileSet, sequence, animation, sub.Value.Value, sd);
 						var subSprites = cache[subSrc, subGetUsedFrames].Select(
 							s => s != null ? new Sprite(s.Sheet,
 								FlipRectangle(s.Bounds, subFlipX, subFlipY), ZRamp,
