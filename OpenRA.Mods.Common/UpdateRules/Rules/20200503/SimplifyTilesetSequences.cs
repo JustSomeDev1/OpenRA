@@ -140,20 +140,43 @@ namespace OpenRA.Mods.Common.UpdateRules.Rules
 					defaults.ReplaceValue(defaults.Value.Value + defaultSpriteExtension);
 			}
 
+			// If the sequence defines more than one animation with an implicit filename,
+			// define the default filename on a Defaults node (creating a new one if needed)
+			var implicitCount = 0;
 			foreach (var sequence in sequenceNode.Value.Nodes)
+			{
+				if (sequence.Key == "Defaults" || sequence.Key == "Inherits" || string.IsNullOrEmpty(sequence.Key))
+					continue;
+
+				if (string.IsNullOrEmpty(sequence.Value.Value))
+					implicitCount++;
+			}
+
+			if (implicitCount > 0)
+			{
+				var lastDefaults = sequenceNode.LastChildMatching("Defaults");
+				if (lastDefaults == null)
+
+
+				explicitDefaultImage = true;
+			}
+
+			foreach (var sequence in sequenceNode.Value.Nodes)
+			{
+				if (sequence.Key == "Inherits")
+					foundInherits = true;
+
+				if (sequence.Key == "Defaults" || sequence.Key == "Inherits" || string.IsNullOrEmpty(sequence.Key))
+					continue;
+
 				ProcessNode(modData, sequence, defaultImage, explicitDefaultImage, defaultAddExtension, defaultUseTilesetExtension, defaultUseTilesetCode, defaultTilesetOverrides);
+			}
 		}
 
 		void ProcessNode(ModData modData, MiniYamlNode sequence, string defaultImage, bool explicitDefaultImage,
 			bool defaultAddExtension, bool defaultUseTilesetExtension, bool defaultUseTilesetCode,
 			Dictionary<string, string> defaultTilesetOverrides)
 		{
-			if (sequence.Key == "Inherits")
-				foundInherits = true;
-
-			if (sequence.Key == "Defaults" || sequence.Key == "Inherits" || string.IsNullOrEmpty(sequence.Key))
-				return;
-
 			var combineNode = sequence.LastChildMatching("Combine");
 			if (combineNode != null)
 			{
