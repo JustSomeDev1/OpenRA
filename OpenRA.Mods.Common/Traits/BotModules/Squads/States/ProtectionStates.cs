@@ -15,9 +15,9 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 {
 	class UnitsForProtectionIdleState : GroundStateBase, IState
 	{
-		public void Activate(Squad owner) { }
-		public void Tick(Squad owner) { owner.FuzzyStateMachine.ChangeState(owner, new UnitsForProtectionAttackState(), true); }
-		public void Deactivate(Squad owner) { }
+		public void Activate(Squad squad) { }
+		public void Tick(Squad squad) { squad.FuzzyStateMachine.ChangeState(squad, new UnitsForProtectionAttackState(), true); }
+		public void Deactivate(Squad squad) { }
 	}
 
 	class UnitsForProtectionAttackState : GroundStateBase, IState
@@ -25,29 +25,29 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 		public const int BackoffTicks = 4;
 		internal int Backoff = BackoffTicks;
 
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			if (!owner.IsTargetValid)
+			if (!squad.IsTargetValid)
 			{
-				owner.TargetActor = owner.SquadManager.FindClosestEnemy(owner.CenterPosition, WDist.FromCells(owner.SquadManager.Info.ProtectionScanRadius));
+				squad.TargetActor = squad.SquadManager.FindClosestEnemy(squad.CenterPosition, WDist.FromCells(squad.SquadManager.Info.ProtectionScanRadius));
 
-				if (owner.TargetActor == null)
+				if (squad.TargetActor == null)
 				{
-					owner.FuzzyStateMachine.ChangeState(owner, new UnitsForProtectionFleeState(), true);
+					squad.FuzzyStateMachine.ChangeState(squad, new UnitsForProtectionFleeState(), true);
 					return;
 				}
 			}
 
-			if (!owner.IsTargetVisible)
+			if (!squad.IsTargetVisible)
 			{
 				if (Backoff < 0)
 				{
-					owner.FuzzyStateMachine.ChangeState(owner, new UnitsForProtectionFleeState(), true);
+					squad.FuzzyStateMachine.ChangeState(squad, new UnitsForProtectionFleeState(), true);
 					Backoff = BackoffTicks;
 					return;
 				}
@@ -56,27 +56,27 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			}
 			else
 			{
-				foreach (var a in owner.Units)
-					owner.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(owner.World, owner.TargetActor.Location), false));
+				foreach (var a in squad.Units)
+					squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(squad.World, squad.TargetActor.Location), false));
 			}
 		}
 
-		public void Deactivate(Squad owner) { }
+		public void Deactivate(Squad squad) { }
 	}
 
 	class UnitsForProtectionFleeState : GroundStateBase, IState
 	{
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			GoToRandomOwnBuilding(owner);
-			owner.FuzzyStateMachine.ChangeState(owner, new UnitsForProtectionIdleState(), true);
+			GoToRandomOwnBuilding(squad);
+			squad.FuzzyStateMachine.ChangeState(squad, new UnitsForProtectionIdleState(), true);
 		}
 
-		public void Deactivate(Squad owner) { owner.Units.Clear(); }
+		public void Deactivate(Squad squad) { squad.Units.Clear(); }
 	}
 }

@@ -16,14 +16,14 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 {
 	abstract class NavyStateBase : StateBase
 	{
-		protected virtual bool ShouldFlee(Squad owner)
+		protected virtual bool ShouldFlee(Squad squad)
 		{
-			return ShouldFlee(owner, enemies => !AttackOrFleeFuzzy.Default.CanAttack(owner.Units, enemies));
+			return ShouldFlee(squad, enemies => !AttackOrFleeFuzzy.Default.CanAttack(squad.Units, enemies));
 		}
 
-		protected Actor FindClosestEnemy(Squad owner)
+		protected Actor FindClosestEnemy(Squad squad)
 		{
-			var first = owner.Units.First();
+			var first = squad.Units.First();
 
 			// Navy squad AI can exploit enemy naval production to find path, if any.
 			// (Way better than finding a nearest target which is likely to be on Ground)
@@ -31,10 +31,10 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			var domainIndex = first.World.WorldActor.Trait<DomainIndex>();
 			var locomotor = first.Trait<Mobile>().Locomotor;
 
-			var navalProductions = owner.World.ActorsHavingTrait<Building>().Where(a
-				=> owner.SquadManager.Info.NavalProductionTypes.Contains(a.Info.Name)
-				&& domainIndex.IsPassable(first.Location, a.Location, locomotor)
-				&& a.AppearsHostileTo(first));
+			var navalProductions = squad.World.ActorsHavingTrait<Building>().Where(a
+				=> squad.SquadManager.Info.NavalProductionTypes.Contains(a.Info.Name)
+				   && domainIndex.IsPassable(first.Location, a.Location, locomotor)
+				   && a.AppearsHostileTo(first));
 
 			if (navalProductions.Any())
 			{
@@ -44,156 +44,156 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				// If the naval production is within MaxBaseRadius, it implies that
 				// this squad is close to enemy territory and they should expect a naval combat;
 				// closest enemy makes more sense in that case.
-				if ((nearest.Location - first.Location).LengthSquared > owner.SquadManager.Info.MaxBaseRadius * owner.SquadManager.Info.MaxBaseRadius)
+				if ((nearest.Location - first.Location).LengthSquared > squad.SquadManager.Info.MaxBaseRadius * squad.SquadManager.Info.MaxBaseRadius)
 					return nearest;
 			}
 
-			return owner.SquadManager.FindClosestEnemy(first.CenterPosition);
+			return squad.SquadManager.FindClosestEnemy(first.CenterPosition);
 		}
 	}
 
 	class NavyUnitsIdleState : NavyStateBase, IState
 	{
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			if (!owner.IsTargetValid)
+			if (!squad.IsTargetValid)
 			{
-				var closestEnemy = FindClosestEnemy(owner);
+				var closestEnemy = FindClosestEnemy(squad);
 				if (closestEnemy == null)
 					return;
 
-				owner.TargetActor = closestEnemy;
+				squad.TargetActor = closestEnemy;
 			}
 
-			var enemyUnits = owner.World.FindActorsInCircle(owner.TargetActor.CenterPosition, WDist.FromCells(owner.SquadManager.Info.IdleScanRadius))
-				.Where(owner.SquadManager.IsPreferredEnemyUnit).ToList();
+			var enemyUnits = squad.World.FindActorsInCircle(squad.TargetActor.CenterPosition, WDist.FromCells(squad.SquadManager.Info.IdleScanRadius))
+				.Where(squad.SquadManager.IsPreferredEnemyUnit).ToList();
 
 			if (enemyUnits.Count == 0)
 				return;
 
-			if (AttackOrFleeFuzzy.Default.CanAttack(owner.Units, enemyUnits))
+			if (AttackOrFleeFuzzy.Default.CanAttack(squad.Units, enemyUnits))
 			{
-				foreach (var u in owner.Units)
-					owner.Bot.QueueOrder(new Order("AttackMove", u, Target.FromCell(owner.World, owner.TargetActor.Location), false));
+				foreach (var u in squad.Units)
+					squad.Bot.QueueOrder(new Order("AttackMove", u, Target.FromCell(squad.World, squad.TargetActor.Location), false));
 
 				// We have gathered sufficient units. Attack the nearest enemy unit.
-				owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsAttackMoveState(), true);
+				squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsAttackMoveState(), true);
 			}
 			else
-				owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsFleeState(), true);
+				squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsFleeState(), true);
 		}
 
-		public void Deactivate(Squad owner) { }
+		public void Deactivate(Squad squad) { }
 	}
 
 	class NavyUnitsAttackMoveState : NavyStateBase, IState
 	{
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			if (!owner.IsTargetValid)
+			if (!squad.IsTargetValid)
 			{
-				var closestEnemy = FindClosestEnemy(owner);
+				var closestEnemy = FindClosestEnemy(squad);
 				if (closestEnemy != null)
-					owner.TargetActor = closestEnemy;
+					squad.TargetActor = closestEnemy;
 				else
 				{
-					owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsFleeState(), true);
+					squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsFleeState(), true);
 					return;
 				}
 			}
 
-			var leader = owner.Units.ClosestTo(owner.TargetActor.CenterPosition);
+			var leader = squad.Units.ClosestTo(squad.TargetActor.CenterPosition);
 			if (leader == null)
 				return;
 
-			var ownUnits = owner.World.FindActorsInCircle(leader.CenterPosition, WDist.FromCells(owner.Units.Count) / 3)
-				.Where(a => a.Owner == owner.Units.First().Owner && owner.Units.Contains(a)).ToHashSet();
+			var ownUnits = squad.World.FindActorsInCircle(leader.CenterPosition, WDist.FromCells(squad.Units.Count) / 3)
+				.Where(a => a.Owner == squad.Units.First().Owner && squad.Units.Contains(a)).ToHashSet();
 
-			if (ownUnits.Count < owner.Units.Count)
+			if (ownUnits.Count < squad.Units.Count)
 			{
 				// Since units have different movement speeds, they get separated while approaching the target.
 				// Let them regroup into tighter formation.
-				owner.Bot.QueueOrder(new Order("Stop", leader, false));
-				foreach (var unit in owner.Units.Where(a => !ownUnits.Contains(a)))
-					owner.Bot.QueueOrder(new Order("AttackMove", unit, Target.FromCell(owner.World, leader.Location), false));
+				squad.Bot.QueueOrder(new Order("Stop", leader, false));
+				foreach (var unit in squad.Units.Where(a => !ownUnits.Contains(a)))
+					squad.Bot.QueueOrder(new Order("AttackMove", unit, Target.FromCell(squad.World, leader.Location), false));
 			}
 			else
 			{
-				var enemies = owner.World.FindActorsInCircle(leader.CenterPosition, WDist.FromCells(owner.SquadManager.Info.AttackScanRadius))
-					.Where(owner.SquadManager.IsPreferredEnemyUnit);
+				var enemies = squad.World.FindActorsInCircle(leader.CenterPosition, WDist.FromCells(squad.SquadManager.Info.AttackScanRadius))
+					.Where(squad.SquadManager.IsPreferredEnemyUnit);
 				var target = enemies.ClosestTo(leader.CenterPosition);
 				if (target != null)
 				{
-					owner.TargetActor = target;
-					owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsAttackState(), true);
+					squad.TargetActor = target;
+					squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsAttackState(), true);
 				}
 				else
-					foreach (var a in owner.Units)
-						owner.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(owner.World, owner.TargetActor.Location), false));
+					foreach (var a in squad.Units)
+						squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(squad.World, squad.TargetActor.Location), false));
 			}
 
-			if (ShouldFlee(owner))
-				owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsFleeState(), true);
+			if (ShouldFlee(squad))
+				squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsFleeState(), true);
 		}
 
-		public void Deactivate(Squad owner) { }
+		public void Deactivate(Squad squad) { }
 	}
 
 	class NavyUnitsAttackState : NavyStateBase, IState
 	{
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			if (!owner.IsTargetValid)
+			if (!squad.IsTargetValid)
 			{
-				var closestEnemy = FindClosestEnemy(owner);
+				var closestEnemy = FindClosestEnemy(squad);
 				if (closestEnemy != null)
-					owner.TargetActor = closestEnemy;
+					squad.TargetActor = closestEnemy;
 				else
 				{
-					owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsFleeState(), true);
+					squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsFleeState(), true);
 					return;
 				}
 			}
 
-			foreach (var a in owner.Units)
+			foreach (var a in squad.Units)
 				if (!BusyAttack(a))
-					owner.Bot.QueueOrder(new Order("Attack", a, Target.FromActor(owner.TargetActor), false));
+					squad.Bot.QueueOrder(new Order("Attack", a, Target.FromActor(squad.TargetActor), false));
 
-			if (ShouldFlee(owner))
-				owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsFleeState(), true);
+			if (ShouldFlee(squad))
+				squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsFleeState(), true);
 		}
 
-		public void Deactivate(Squad owner) { }
+		public void Deactivate(Squad squad) { }
 	}
 
 	class NavyUnitsFleeState : NavyStateBase, IState
 	{
-		public void Activate(Squad owner) { }
+		public void Activate(Squad squad) { }
 
-		public void Tick(Squad owner)
+		public void Tick(Squad squad)
 		{
-			if (!owner.IsValid)
+			if (!squad.IsValid)
 				return;
 
-			GoToRandomOwnBuilding(owner);
-			owner.FuzzyStateMachine.ChangeState(owner, new NavyUnitsIdleState(), true);
+			GoToRandomOwnBuilding(squad);
+			squad.FuzzyStateMachine.ChangeState(squad, new NavyUnitsIdleState(), true);
 		}
 
-		public void Deactivate(Squad owner) { owner.Units.Clear(); }
+		public void Deactivate(Squad squad) { squad.Units.Clear(); }
 	}
 }
