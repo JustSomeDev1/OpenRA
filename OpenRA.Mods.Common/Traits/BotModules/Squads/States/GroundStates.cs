@@ -42,10 +42,10 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				if (closestEnemy == null)
 					return;
 
-				squad.TargetActor = closestEnemy;
+				squad.Target = Target.FromActor(closestEnemy);
 			}
 
-			var enemyUnits = squad.World.FindActorsInCircle(squad.TargetActor.CenterPosition, WDist.FromCells(squad.SquadManager.Info.IdleScanRadius))
+			var enemyUnits = squad.World.FindActorsInCircle(squad.Target.CenterPosition, WDist.FromCells(squad.SquadManager.Info.IdleScanRadius))
 				.Where(squad.SquadManager.IsPreferredEnemyUnit).ToList();
 
 			if (enemyUnits.Count == 0)
@@ -54,7 +54,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			if (AttackOrFleeFuzzy.Default.CanAttack(squad.Units, enemyUnits))
 			{
 				foreach (var u in squad.Units)
-					squad.Bot.QueueOrder(new Order("AttackMove", u, Target.FromCell(squad.World, squad.TargetActor.Location), false));
+					squad.Bot.QueueOrder(new Order("AttackMove", u, Target.FromPos(squad.Target.CenterPosition), false));
 
 				// We have gathered sufficient units. Attack the nearest enemy unit.
 				squad.FuzzyStateMachine.ChangeState(squad, new GroundUnitsAttackMoveState(), true);
@@ -79,7 +79,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			{
 				var closestEnemy = FindClosestEnemy(squad);
 				if (closestEnemy != null)
-					squad.TargetActor = closestEnemy;
+					squad.Target = Target.FromActor(closestEnemy);
 				else
 				{
 					squad.FuzzyStateMachine.ChangeState(squad, new GroundUnitsFleeState(), true);
@@ -87,7 +87,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				}
 			}
 
-			var leader = squad.Units.ClosestTo(squad.TargetActor.CenterPosition);
+			var leader = squad.Units.ClosestTo(squad.Target.CenterPosition);
 			if (leader == null)
 				return;
 
@@ -100,7 +100,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				// Let them regroup into tighter formation.
 				squad.Bot.QueueOrder(new Order("Stop", leader, false));
 				foreach (var unit in squad.Units.Where(a => !ownUnits.Contains(a)))
-					squad.Bot.QueueOrder(new Order("AttackMove", unit, Target.FromCell(squad.World, leader.Location), false));
+					squad.Bot.QueueOrder(new Order("AttackMove", unit, Target.FromPos(leader.CenterPosition), false));
 			}
 			else
 			{
@@ -109,12 +109,12 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				var target = enemies.ClosestTo(leader.CenterPosition);
 				if (target != null)
 				{
-					squad.TargetActor = target;
+					squad.Target = Target.FromActor(target);
 					squad.FuzzyStateMachine.ChangeState(squad, new GroundUnitsAttackState(), true);
 				}
 				else
 					foreach (var a in squad.Units)
-						squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(squad.World, squad.TargetActor.Location), false));
+						squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromPos(squad.Target.CenterPosition), false));
 			}
 
 			if (ShouldFlee(squad))
@@ -137,7 +137,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			{
 				var closestEnemy = FindClosestEnemy(squad);
 				if (closestEnemy != null)
-					squad.TargetActor = closestEnemy;
+					squad.Target = Target.FromActor(closestEnemy);
 				else
 				{
 					squad.FuzzyStateMachine.ChangeState(squad, new GroundUnitsFleeState(), true);
@@ -147,7 +147,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 
 			foreach (var a in squad.Units)
 				if (!BusyAttack(a))
-					squad.Bot.QueueOrder(new Order("Attack", a, Target.FromActor(squad.TargetActor), false));
+					squad.Bot.QueueOrder(new Order("Attack", a, squad.Target, false));
 
 			if (ShouldFlee(squad))
 				squad.FuzzyStateMachine.ChangeState(squad, new GroundUnitsFleeState(), true);

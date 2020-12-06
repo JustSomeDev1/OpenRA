@@ -135,7 +135,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			if (e == null)
 				return;
 
-			squad.TargetActor = e;
+			squad.Target = Target.FromActor(e);
 			squad.FuzzyStateMachine.ChangeState(squad, new AirAttackState(), true);
 		}
 
@@ -156,7 +156,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				var a = squad.Units.Random(squad.Random);
 				var closestEnemy = squad.SquadManager.FindClosestEnemy(a.CenterPosition);
 				if (closestEnemy != null)
-					squad.TargetActor = closestEnemy;
+					squad.Target = Target.FromActor(closestEnemy);
 				else
 				{
 					squad.FuzzyStateMachine.ChangeState(squad, new AirFleeState(), true);
@@ -164,7 +164,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 				}
 			}
 
-			if (!NearToPosSafely(squad, squad.TargetActor.CenterPosition))
+			if (!NearToPosSafely(squad, squad.Target.CenterPosition))
 			{
 				squad.FuzzyStateMachine.ChangeState(squad, new AirFleeState(), true);
 				return;
@@ -188,8 +188,8 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 					}
 				}
 
-				if (CanAttackTarget(a, squad.TargetActor))
-					squad.Bot.QueueOrder(new Order("Attack", a, Target.FromActor(squad.TargetActor), false));
+				if (CanAttackTarget(a, squad.Target))
+					squad.Bot.QueueOrder(new Order("Attack", a, squad.Target, false));
 			}
 		}
 

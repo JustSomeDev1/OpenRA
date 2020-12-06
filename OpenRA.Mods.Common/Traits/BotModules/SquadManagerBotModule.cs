@@ -206,11 +206,16 @@ namespace OpenRA.Mods.Common.Traits
 			return Squads.FirstOrDefault(s => s.Type == type);
 		}
 
-		Squad RegisterNewSquad(IBot bot, SquadType type, Actor target = null)
+		Squad RegisterNewSquad(IBot bot, SquadType type, Target target)
 		{
 			var ret = new Squad(bot, this, type, target);
 			Squads.Add(ret);
 			return ret;
+		}
+
+		Squad RegisterNewSquad(IBot bot, SquadType type)
+		{
+			return RegisterNewSquad(bot, type, Target.Invalid);
 		}
 
 		void AssignRolesToIdleUnits(IBot bot)
@@ -326,7 +331,7 @@ namespace OpenRA.Mods.Common.Traits
 					var target = enemies.Any() ? enemies.Random(World.LocalRandom) : b;
 					var rush = GetSquadOfType(SquadType.Rush);
 					if (rush == null)
-						rush = RegisterNewSquad(bot, SquadType.Rush, target);
+						rush = RegisterNewSquad(bot, SquadType.Rush, Target.FromActor(target));
 
 					foreach (var a3 in ownUnits)
 						rush.Units.Add(a3);
@@ -340,10 +345,10 @@ namespace OpenRA.Mods.Common.Traits
 		{
 			var protectSq = GetSquadOfType(SquadType.Protection);
 			if (protectSq == null)
-				protectSq = RegisterNewSquad(bot, SquadType.Protection, attacker);
+				protectSq = RegisterNewSquad(bot, SquadType.Protection, Target.FromActor(attacker));
 
 			if (!protectSq.IsTargetValid)
-				protectSq.TargetActor = attacker;
+				protectSq.Target = Target.FromActor(attacker);
 
 			if (!protectSq.IsValid)
 			{

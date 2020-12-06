@@ -34,13 +34,15 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 
 			if (!squad.IsTargetValid)
 			{
-				squad.TargetActor = squad.SquadManager.FindClosestEnemy(squad.CenterPosition, WDist.FromCells(squad.SquadManager.Info.ProtectionScanRadius));
-
-				if (squad.TargetActor == null)
+				var target = squad.SquadManager.FindClosestEnemy(squad.CenterPosition, WDist.FromCells(squad.SquadManager.Info.ProtectionScanRadius));
+				if (target == null)
 				{
+					squad.Target = Target.Invalid;
 					squad.FuzzyStateMachine.ChangeState(squad, new UnitsForProtectionFleeState(), true);
 					return;
 				}
+
+				squad.Target = Target.FromActor(target);
 			}
 
 			if (!squad.IsTargetVisible)
@@ -57,7 +59,7 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			else
 			{
 				foreach (var a in squad.Units)
-					squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromCell(squad.World, squad.TargetActor.Location), false));
+					squad.Bot.QueueOrder(new Order("AttackMove", a, Target.FromPos(squad.Target.CenterPosition), false));
 			}
 		}
 

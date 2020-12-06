@@ -32,16 +32,16 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 		internal StateMachine FuzzyStateMachine;
 
 		public Squad(IBot bot, SquadManagerBotModule squadManager, SquadType type)
-			: this(bot, squadManager, type, null) { }
+			: this(bot, squadManager, type, Target.Invalid) { }
 
-		public Squad(IBot bot, SquadManagerBotModule squadManager, SquadType type, Actor target)
+		public Squad(IBot bot, SquadManagerBotModule squadManager, SquadType type, Target target)
 		{
 			Bot = bot;
 			SquadManager = squadManager;
 			World = bot.Player.PlayerActor.World;
 			Random = World.LocalRandom;
 			Type = type;
-			Target = Target.FromActor(target);
+			Target = target;
 			FuzzyStateMachine = new StateMachine();
 
 			switch (type)
@@ -70,12 +70,6 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 
 		public bool IsValid { get { return Units.Any(); } }
 
-		public Actor TargetActor
-		{
-			get { return Target.Actor; }
-			set { Target = Target.FromActor(value); }
-		}
-
 		public bool IsTargetValid
 		{
 			get { return Target.IsValidFor(Units.FirstOrDefault()) && !Target.Actor.Info.HasTraitInfo<HuskInfo>(); }
@@ -83,7 +77,13 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 
 		public bool IsTargetVisible
 		{
-			get { return TargetActor.CanBeViewedByPlayer(Bot.Player); }
+			get
+			{
+				if (Target.Type != TargetType.Actor)
+					return false;
+
+				return Target.Actor.CanBeViewedByPlayer(Bot.Player);
+			}
 		}
 
 		public WPos CenterPosition { get { return Units.Select(u => u.CenterPosition).Average(); } }
@@ -97,7 +97,11 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			});
 
 			if (Target.Type == TargetType.Actor)
-				nodes.Nodes.Add(new MiniYamlNode("Target", FieldSaver.FormatValue(Target.Actor.ActorID)));
+				nodes.Nodes.Add(new MiniYamlNode("TargetActor", FieldSaver.FormatValue(Target.Actor.ActorID)));
+			else if (Target.Type == TargetType.FrozenActor)
+				nodes.Nodes.Add(new MiniYamlNode("TargetFrozenActor", FieldSaver.FormatValue(Target.FrozenActor.ID)));
+			else if (Target.Type == TargetType.Terrain)
+				nodes.Nodes.Add(new MiniYamlNode("TargetTerrain", FieldSaver.FormatValue(Target.CenterPosition)));
 
 			return nodes;
 		}
@@ -105,18 +109,34 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 		public static Squad Deserialize(IBot bot, SquadManagerBotModule squadManager, MiniYaml yaml)
 		{
 			var type = SquadType.Rush;
-			Actor targetActor = null;
+			var target = Target.Invalid;
 
 			var typeNode = yaml.Nodes.FirstOrDefault(n => n.Key == "Type");
 			if (typeNode != null)
 				type = FieldLoader.GetValue<SquadType>("Type", typeNode.Value.Value);
 
-			var targetNode = yaml.Nodes.FirstOrDefault(n => n.Key == "Target");
-			if (targetNode != null)
-				targetActor = squadManager.World.GetActorById(FieldLoader.GetValue<uint>("ActiveUnits", targetNode.Value.Value));
+			var targetActorNode = yaml.Nodes.FirstOrDefault(n => n.Key == "TargetActor");
+			if (targetActorNode != null)
+			{
+				var targetActorId = FieldLoader.GetValue<uint>("TargetActor", targetActorNode.Value.Value);
+				target = Target.FromActor(squadManager.World.GetActorById(targetActorId));
+			}
 
-			var squad = new Squad(bot, squadManager, type, targetActor);
+			var targetFrozenActorNode = yaml.Nodes.FirstOrDefault(n => n.Key == "TargetFrozenActor");
+			if (targetFrozenActorNode != null)
+			{
+				var targetFrozenActorId = FieldLoader.GetValue<uint>("TargetFrozenActor", targetFrozenActorNode.Value.Value);
+				target = Target.FromFrozenActor(bot.Player.FrozenActorLayer.FromID(targetFrozenActorId));
+			}
 
+			var targetTerrainNode = yaml.Nodes.FirstOrDefault(n => n.Key == "TargetTerrain");
+			if (targetTerrainNode != null)
+			{
+				var targetPos = FieldLoader.GetValue<WPos>("TargetTerrain", targetFrozenActorNode.Value.Value);
+				target = Target.FromPos(targetPos);
+			}
+
+			var squad = new Squad(bot, squadManager, type, target);
 			var unitsNode = yaml.Nodes.FirstOrDefault(n => n.Key == "Units");
 			if (unitsNode != null)
 				squad.Units.AddRange(FieldLoader.GetValue<uint[]>("Units", unitsNode.Value.Value)

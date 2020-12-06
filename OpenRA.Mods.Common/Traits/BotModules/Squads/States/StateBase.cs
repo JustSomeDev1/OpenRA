@@ -58,12 +58,16 @@ namespace OpenRA.Mods.Common.Traits.BotModules.Squads
 			return false;
 		}
 
-		protected static bool CanAttackTarget(Actor a, Actor target)
+		protected static bool CanAttackTarget(Actor a, Target target)
 		{
+			// TODO: Rewrite this to use target.IsValidFor(a)
+			if (target.Type != TargetType.Actor)
+				return false;
+
 			if (!a.Info.HasTraitInfo<AttackBaseInfo>())
 				return false;
 
-			var targetTypes = target.GetEnabledTargetTypes();
+			var targetTypes = target.Actor.GetEnabledTargetTypes();
 			if (targetTypes.IsEmpty)
 				return false;
 
