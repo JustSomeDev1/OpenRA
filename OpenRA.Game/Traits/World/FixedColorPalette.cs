@@ -25,14 +25,14 @@ namespace OpenRA.Traits
 		[Desc("The name of the resulting palette")]
 		public readonly string Name = "resources";
 
-		[Desc("Remap these indices to pre-defined colors.")]
+		[FieldLoader.Require]
+		[Desc("The palette indices to remap to player color.",
+			"The first index in this list is taken as the reference color that is exactly matched to the player.",
+			"The remaining indices are changed to keep the same relative color offset to the reference index.")]
 		public readonly int[] RemapIndex = { };
 
 		[Desc("The fixed color to remap.")]
 		public readonly Color Color;
-
-		[Desc("Luminosity range to span.")]
-		public readonly float Ramp = 0.05f;
 
 		[Desc("Allow palette modifiers to change the palette.")]
 		public readonly bool AllowModifiers = true;
@@ -51,8 +51,15 @@ namespace OpenRA.Traits
 
 		public void LoadPalettes(WorldRenderer wr)
 		{
-			var remap = new PlayerColorRemap(info.RemapIndex, info.Color, info.Ramp);
-			wr.AddPalette(info.Name, new ImmutablePalette(wr.Palette(info.Base).Palette, remap), info.AllowModifiers);
+			var basePal = wr.Palette(info.Base).Palette;
+			var referenceColor = basePal.GetColor(info.RemapIndex[0]);
+
+			referenceColor.ToAhsv(out _, out var rh, out var rs, out var rv);
+			info.Color.ToAhsv(out _, out var h, out var s, out var v);
+
+			var remap = new PlayerColorRemap(info.RemapIndex, h - rh, s - rs, v - rv);
+			var pal = new ImmutablePalette(basePal, remap);
+			wr.AddPalette(info.Name, pal, info.AllowModifiers);
 		}
 	}
 }

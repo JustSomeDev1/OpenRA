@@ -18,43 +18,26 @@ namespace OpenRA.Graphics
 {
 	public class PlayerColorRemap : IPaletteRemap
 	{
-		Dictionary<int, Color> remapColors;
+		readonly int[] remapIndices;
+		readonly float hueOffset;
+		readonly float saturationOffset;
+		readonly float valueOffset;
 
-		public static int GetRemapIndex(int[] ramp, int i)
+		public PlayerColorRemap(int[] remapIndices, float hueOffset, float saturationOffset, float valueOffset)
 		{
-			return ramp[i];
-		}
-
-		public PlayerColorRemap(int[] ramp, Color c, float rampFraction)
-		{
-			var h = c.GetHue() / 360.0f;
-			var s = c.GetSaturation();
-			var l = c.GetBrightness();
-
-			// Increase luminosity if required to represent the full ramp
-			var rampRange = (byte)((1 - rampFraction) * l);
-			var c1 = Color.FromAhsl(h, s, Math.Max(rampRange, l));
-			var c2 = Color.FromAhsl(h, s, (byte)Math.Max(0, l - rampRange));
-			var baseIndex = ramp[0];
-			var remapRamp = ramp.Select(r => r - ramp[0]);
-			var rampMaxIndex = ramp.Length - 1;
-
-			// reversed remapping
-			if (ramp[0] > ramp[rampMaxIndex])
-			{
-				baseIndex = ramp[rampMaxIndex];
-				for (var i = rampMaxIndex; i > 0; i--)
-					remapRamp = ramp.Select(r => r - ramp[rampMaxIndex]);
-			}
-
-			remapColors = remapRamp.Select((x, i) => (baseIndex + i, Exts.ColorLerp(x / (float)ramp.Length, c1, c2)))
-				.ToDictionary(u => u.Item1, u => u.Item2);
+			this.remapIndices = remapIndices;
+			this.hueOffset = hueOffset;
+			this.saturationOffset = saturationOffset;
+			this.valueOffset = valueOffset;
 		}
 
 		public Color GetRemappedColor(Color original, int index)
 		{
-			return remapColors.TryGetValue(index, out var c)
-				? c : original;
+			if (!remapIndices.Contains(index))
+				return original;
+
+			original.ToAhsv(out var a, out var h, out var s, out var v);
+			return Color.FromAhsv(a, (h + hueOffset) % 1, (s + saturationOffset).Clamp(0, 1), (v + valueOffset).Clamp(0, 1));
 		}
 	}
 }

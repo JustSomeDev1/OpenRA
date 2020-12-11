@@ -42,10 +42,15 @@ namespace OpenRA.Mods.Common.Widgets
 		{
 			if (cachedColor == Color)
 				return;
+
 			cachedColor = Color;
 
+			var referenceColor = preview.GetColor(RemapIndices[0]);
+			referenceColor.ToAhsv(out _, out var rh, out var rs, out var rv);
+			Color.ToAhsv(out _, out var h, out var s, out var v);
+
 			var newPalette = new MutablePalette(preview);
-			newPalette.ApplyRemap(new PlayerColorRemap(RemapIndices, Color, Ramp));
+			newPalette.ApplyRemap(new PlayerColorRemap(RemapIndices, h - rh, s - rs, v - rv));
 			worldRenderer.ReplacePalette(PaletteName, newPalette);
 		}
 	}
