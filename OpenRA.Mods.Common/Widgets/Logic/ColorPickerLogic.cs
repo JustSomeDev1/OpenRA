@@ -42,11 +42,9 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			preview?.SetPreview(actor, td);
 
-			var hueSlider = widget.Get<SliderWidget>("HUE");
 			var mixer = widget.Get<ColorMixerWidget>("MIXER");
 			var randomButton = widget.GetOrNull<ButtonWidget>("RANDOM_BUTTON");
 
-			hueSlider.OnChange += _ => mixer.Set(hueSlider.Value);
 			mixer.OnChange += () => onChange(mixer.Color);
 
 			if (randomButton != null)
@@ -60,15 +58,13 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					var color = Color.FromAhsl(hue, sat, lum);
 
 					mixer.Set(color);
-					hueSlider.Value = HueFromColor(color);
 				};
 			}
 
 			// Set the initial state
 			var validator = modData.Manifest.Get<ColorValidator>();
-			mixer.SetPaletteRange(validator.HsvSaturationRange[0], validator.HsvSaturationRange[1], validator.HsvValueRange[0], validator.HsvValueRange[1]);
+			mixer.SetColorLimits(validator.HsvSaturationRange[0], validator.HsvSaturationRange[1], validator.V);
 			mixer.Set(initialColor);
-			hueSlider.Value = HueFromColor(initialColor);
 
 			// HACK: the value returned from the color mixer will generally not
 			// be equal to the given initialColor due to its internal RGB -> HSL -> RGB
@@ -129,7 +125,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					newSwatch.OnMouseUp = m =>
 					{
 						mixer.Set(color);
-						hueSlider.Value = HueFromColor(color);
 						onChange(color);
 					};
 
@@ -152,7 +147,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					{
 						var color = Game.Settings.Player.CustomColors[colorIndex];
 						mixer.Set(color);
-						hueSlider.Value = HueFromColor(color);
 						onChange(color);
 					};
 

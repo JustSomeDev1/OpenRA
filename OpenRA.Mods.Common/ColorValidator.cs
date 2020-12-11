@@ -21,8 +21,8 @@ namespace OpenRA.Mods.Common
 	{
 		// The bigger the color threshold, the less permissive is the algorithm
 		public readonly int Threshold = 0x50;
-		public readonly float[] HsvSaturationRange = new[] { 0.25f, 1f };
-		public readonly float[] HsvValueRange = new[] { 0.2f, 1.0f };
+		public readonly float[] HsvSaturationRange = new[] { 0.3f, 0.9f };
+		public readonly float V = 0.95f;
 		public readonly Color[] TeamColorPresets = { };
 
 		double GetColorDelta(Color colorA, Color colorB)
@@ -58,7 +58,7 @@ namespace OpenRA.Mods.Common
 		{
 			// Validate color against HSV
 			askedColor.ToAhsv(out _, out _, out var s, out var v);
-			if (s < HsvSaturationRange[0] || s > HsvSaturationRange[1] || v < HsvValueRange[0] || v > HsvValueRange[1])
+			if (s < HsvSaturationRange[0] || s > HsvSaturationRange[1] || v > V + 0.05f || v < v - 0.05f)
 			{
 				errorMessages?.Add("Color was adjusted to be inside the allowed range.");
 				forbiddenColor = askedColor;
@@ -104,7 +104,7 @@ namespace OpenRA.Mods.Common
 			{
 				var h = random.Next(255) / 255f;
 				var s = float2.Lerp(HsvSaturationRange[0], HsvSaturationRange[1], random.NextFloat());
-				var v = float2.Lerp(HsvValueRange[0], HsvValueRange[1], random.NextFloat());
+				var v = float2.Lerp(V, V, random.NextFloat());
 				color = Color.FromAhsv(h, s, v);
 			}
 			while (!IsValid(color, out _, terrainColors, playerColors));
