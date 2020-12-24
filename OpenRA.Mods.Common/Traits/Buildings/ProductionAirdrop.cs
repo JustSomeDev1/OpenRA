@@ -57,7 +57,6 @@ namespace OpenRA.Mods.Common.Traits
 			WPos endPos;
 			WAngle spawnFacing;
 
-			var bounds = map.Bounds;
 			var diagonalVec = map.ProjectedBottomRight - map.ProjectedTopLeft;
 
 			if (info.BaselineSpawn)
@@ -74,10 +73,23 @@ namespace OpenRA.Mods.Common.Traits
 				// map at a given angle. This makes the production timing independent
 				// of spawnpoint.
 				spawnFacing = info.Facing;
-				var longestApproach = Math.Min(diagonalVec.Y * 1024 / spawnFacing.Cos(), diagonalVec.X * 1024 / spawnFacing.Sin());
-				var spawnVec = new WVec(0, -longestApproach, 0).Rotate(WRot.FromYaw(spawnFacing));
-				startPos = self.CenterPosition + spawnVec;
-				endPos = self.CenterPosition - spawnVec;
+
+				WVec spawnVec;
+				var cosFacing = spawnFacing.Cos();
+				var sinFacing = spawnFacing.Sin();
+				if (cosFacing == 0)
+					spawnVec = new WVec(diagonalVec.X * Math.Sign(sinFacing), 0, 0);
+				else if (sinFacing == 0)
+					spawnVec = new WVec(0, diagonalVec.Y * Math.Sign(cosFacing), 0);
+				else
+				{
+					var diagonal = Math.Min(diagonalVec.X * 1024 / sinFacing, diagonalVec.Y * 1024 / cosFacing);
+					spawnVec = new WVec(0, -diagonal, 0).Rotate(WRot.FromYaw(spawnFacing));
+				}
+
+				var targetPos = self.CenterPosition;
+				startPos = targetPos + spawnVec;
+				endPos = targetPos - spawnVec;
 			}
 
 			// Assume a single exit point for simplicity
