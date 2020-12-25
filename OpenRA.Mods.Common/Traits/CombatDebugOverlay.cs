@@ -32,22 +32,21 @@ namespace OpenRA.Mods.Common.Traits
 		static readonly WVec TargetPosVLine = new WVec(128, 0, 0);
 
 		readonly DebugVisualizations debugVis;
-		readonly IHealthInfo healthInfo;
-		readonly Lazy<BodyOrientation> coords;
 
+		IHealthInfo healthInfo;
+		BodyOrientation coords;
 		HitShape[] shapes;
 		IBlocksProjectiles[] allBlockers;
 
 		public CombatDebugOverlay(Actor self)
 		{
-			healthInfo = self.Info.TraitInfoOrDefault<IHealthInfo>();
-			coords = Exts.Lazy(self.Trait<BodyOrientation>);
-
 			debugVis = self.World.WorldActor.TraitOrDefault<DebugVisualizations>();
 		}
 
 		void INotifyCreated.Created(Actor self)
 		{
+			healthInfo = self.Info.TraitInfoOrDefault<IHealthInfo>();
+			coords = self.Trait<BodyOrientation>();
 			shapes = self.TraitsImplementing<HitShape>().ToArray();
 			allBlockers = self.TraitsImplementing<IBlocksProjectiles>().ToArray();
 		}
@@ -94,12 +93,12 @@ namespace OpenRA.Mods.Common.Traits
 			var garrison = attack as AttackGarrisoned;
 			if (garrison != null)
 			{
-				var bodyOrientation = coords.Value.QuantizeOrientation(self, self.Orientation);
+				var bodyOrientation = coords.QuantizeOrientation(self, self.Orientation);
 				foreach (var p in garrison.Info.Ports)
 				{
-					var pos = self.CenterPosition + coords.Value.LocalToWorld(p.Offset.Rotate(bodyOrientation));
-					var da = coords.Value.LocalToWorld(new WVec(224, 0, 0).Rotate(WRot.FromYaw(p.Yaw + p.Cone)).Rotate(bodyOrientation));
-					var db = coords.Value.LocalToWorld(new WVec(224, 0, 0).Rotate(WRot.FromYaw(p.Yaw - p.Cone)).Rotate(bodyOrientation));
+					var pos = self.CenterPosition + coords.LocalToWorld(p.Offset.Rotate(bodyOrientation));
+					var da = coords.LocalToWorld(new WVec(224, 0, 0).Rotate(WRot.FromYaw(p.Yaw + p.Cone)).Rotate(bodyOrientation));
+					var db = coords.LocalToWorld(new WVec(224, 0, 0).Rotate(WRot.FromYaw(p.Yaw - p.Cone)).Rotate(bodyOrientation));
 
 					yield return new LineAnnotationRenderable(pos, pos + da * 224 / da.Length, 1, Color.White);
 					yield return new LineAnnotationRenderable(pos, pos + db * 224 / da.Length, 1, Color.White);

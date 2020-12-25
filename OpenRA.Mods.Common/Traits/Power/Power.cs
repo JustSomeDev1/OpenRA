@@ -25,20 +25,23 @@ namespace OpenRA.Mods.Common.Traits
 
 	public class Power : ConditionalTrait<PowerInfo>, INotifyAddedToWorld, INotifyRemovedFromWorld, INotifyOwnerChanged
 	{
-		readonly Lazy<IPowerModifier[]> powerModifiers;
-
 		public PowerManager PlayerPower { get; private set; }
-
-		public int GetEnabledPower()
-		{
-			return Util.ApplyPercentageModifiers(Info.Amount, powerModifiers.Value.Select(m => m.GetPowerModifier()));
-		}
+		IPowerModifier[] powerModifiers;
 
 		public Power(Actor self, PowerInfo info)
 			: base(info)
 		{
 			PlayerPower = self.Owner.PlayerActor.Trait<PowerManager>();
-			powerModifiers = Exts.Lazy(() => self.TraitsImplementing<IPowerModifier>().ToArray());
+		}
+
+		protected override void Created(Actor self)
+		{
+			powerModifiers = self.TraitsImplementing<IPowerModifier>().ToArray();
+		}
+
+		public int GetEnabledPower()
+		{
+			return Util.ApplyPercentageModifiers(Info.Amount, powerModifiers.Select(m => m.GetPowerModifier()));
 		}
 
 		protected override void TraitEnabled(Actor self) { PlayerPower.UpdateActor(self); }

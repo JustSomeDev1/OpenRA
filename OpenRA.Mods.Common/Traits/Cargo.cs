@@ -95,12 +95,13 @@ namespace OpenRA.Mods.Common.Traits
 		readonly List<Actor> cargo = new List<Actor>();
 		readonly HashSet<Actor> reserves = new HashSet<Actor>();
 		readonly Dictionary<string, Stack<int>> passengerTokens = new Dictionary<string, Stack<int>>();
-		readonly Lazy<IFacing> facing;
 		readonly bool checkTerrainType;
+
+		Aircraft aircraft;
+		IFacing facing;
 
 		int totalWeight = 0;
 		int reservedWeight = 0;
-		Aircraft aircraft;
 		int loadingToken = Actor.InvalidConditionToken;
 		Stack<int> loadedTokens = new Stack<int>();
 		bool takeOffAfterLoad;
@@ -161,13 +162,12 @@ namespace OpenRA.Mods.Common.Traits
 
 				totalWeight = cargo.Sum(c => GetWeight(c));
 			}
-
-			facing = Exts.Lazy(self.TraitOrDefault<IFacing>);
 		}
 
 		void INotifyCreated.Created(Actor self)
 		{
 			aircraft = self.TraitOrDefault<Aircraft>();
+			facing = self.TraitOrDefault<IFacing>();
 
 			if (cargo.Any())
 			{
@@ -362,12 +362,12 @@ namespace OpenRA.Mods.Common.Traits
 
 		void SetPassengerFacing(Actor passenger)
 		{
-			if (facing.Value == null)
+			if (facing == null)
 				return;
 
 			var passengerFacing = passenger.TraitOrDefault<IFacing>();
 			if (passengerFacing != null)
-				passengerFacing.Facing = facing.Value.Facing + Info.PassengerFacing;
+				passengerFacing.Facing = facing.Facing + Info.PassengerFacing;
 		}
 
 		public void Load(Actor self, Actor a)

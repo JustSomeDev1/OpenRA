@@ -37,12 +37,16 @@ namespace OpenRA.Mods.Common.Traits
 
 	class ProductionParadrop : Production
 	{
-		readonly Lazy<RallyPoint> rp;
+		RallyPoint rp;
 
 		public ProductionParadrop(ActorInitializer init, ProductionParadropInfo info)
-			: base(init, info)
+			: base(init, info) { }
+
+		protected override void Created(Actor self)
 		{
-			rp = Exts.Lazy(() => init.Self.IsDead ? null : init.Self.TraitOrDefault<RallyPoint>());
+			rp = self.TraitOrDefault<RallyPoint>();
+
+			base.Created(self);
 		}
 
 		public override bool Produce(Actor self, ActorInfo producee, string productionType, TypeDictionary inits, int refundableValue)
@@ -132,7 +136,7 @@ namespace OpenRA.Mods.Common.Traits
 
 				var initialFacing = (exitinfo != null && exitinfo.Facing.HasValue) ? exitinfo.Facing.Value : (to - spawn).Yaw;
 
-				exitLocations = rp.Value != null && rp.Value.Path.Count > 0 ? rp.Value.Path : new List<CPos> { exit };
+				exitLocations = rp != null && rp.Path.Count > 0 ? rp.Path : new List<CPos> { exit };
 
 				td.Add(new LocationInit(exit));
 				td.Add(new CenterPositionInit(spawn));

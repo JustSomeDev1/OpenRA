@@ -167,7 +167,7 @@ namespace OpenRA.Mods.Common.Traits
 		{
 			if (Info.DisplayRadarPing && manager.RadarPings != null)
 			{
-				ping = manager.RadarPings.Value.Add(
+				ping = manager.RadarPings.Add(
 					() => order.Player.IsAlliedWith(self.World.RenderPlayer),
 					order.Target.CenterPosition,
 					order.Player.Color,

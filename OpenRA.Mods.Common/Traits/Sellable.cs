@@ -44,15 +44,20 @@ namespace OpenRA.Mods.Common.Traits
 	public class Sellable : ConditionalTrait<SellableInfo>, IResolveOrder, IProvideTooltipInfo
 	{
 		readonly Actor self;
-		readonly Lazy<IHealth> health;
 		readonly SellableInfo info;
+		IHealth health;
 
 		public Sellable(Actor self, SellableInfo info)
 			: base(info)
 		{
 			this.self = self;
 			this.info = info;
-			health = Exts.Lazy(() => self.TraitOrDefault<IHealth>());
+		}
+
+		protected override void Created(Actor self)
+		{
+			health = self.TraitOrDefault<IHealth>();
+			base.Created(self);
 		}
 
 		public void ResolveOrder(Actor self, Order order)
@@ -101,8 +106,8 @@ namespace OpenRA.Mods.Common.Traits
 				var sellValue = self.GetSellValue();
 
 				// Cast to long to avoid overflow when multiplying by the health
-				var hp = health != null ? (long)health.Value.HP : 1L;
-				var maxHP = health != null ? (long)health.Value.MaxHP : 1L;
+				var hp = health?.HP ?? 1L;
+				var maxHP = health?.MaxHP ?? 1L;
 				var refund = (int)((sellValue * info.RefundPercent * hp) / (100 * maxHP));
 
 				return "Refund: $" + refund;

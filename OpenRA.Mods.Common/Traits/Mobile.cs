@@ -149,7 +149,6 @@ namespace OpenRA.Mods.Common.Traits
 		IFacing, IDeathActorInitModifier, INotifyAddedToWorld, INotifyRemovedFromWorld, INotifyBlockingMove, IActorPreviewInitModifier, INotifyBecomingIdle
 	{
 		readonly Actor self;
-		readonly Lazy<IEnumerable<int>> speedModifiers;
 
 		readonly bool returnToCellOnCreation;
 		readonly bool returnToCellOnCreationRecalculateSubCell = true;
@@ -184,6 +183,7 @@ namespace OpenRA.Mods.Common.Traits
 		CPos fromCell, toCell;
 		public SubCell FromSubCell, ToSubCell;
 
+		IEnumerable<int> speedModifiers;
 		INotifyCustomLayerChanged[] notifyCustomLayerChanged;
 		INotifyVisualPositionChanged[] notifyVisualPositionChanged;
 		INotifyMoving[] notifyMoving;
@@ -252,8 +252,6 @@ namespace OpenRA.Mods.Common.Traits
 		{
 			self = init.Self;
 
-			speedModifiers = Exts.Lazy(() => self.TraitsImplementing<ISpeedModifier>().ToArray().Select(x => x.GetSpeedModifier()));
-
 			ToSubCell = FromSubCell = info.LocomotorInfo.SharesCell ? init.World.Map.Grid.DefaultSubCell : SubCell.FullCell;
 
 			var subCellInit = init.GetOrDefault<SubCellInit>();
@@ -295,6 +293,8 @@ namespace OpenRA.Mods.Common.Traits
 			Pathfinder = self.World.WorldActor.Trait<IPathFinder>();
 			Locomotor = self.World.WorldActor.TraitsImplementing<Locomotor>()
 				.Single(l => l.Info.Name == Info.Locomotor);
+
+			speedModifiers = self.TraitsImplementing<ISpeedModifier>().ToArray().Select(x => x.GetSpeedModifier());
 
 			base.Created(self);
 		}
@@ -731,7 +731,7 @@ namespace OpenRA.Mods.Common.Traits
 		public int MovementSpeedForCell(Actor self, CPos cell)
 		{
 			var terrainSpeed = Locomotor.MovementSpeedForCell(cell);
-			var modifiers = speedModifiers.Value.Append(terrainSpeed);
+			var modifiers = speedModifiers.Append(terrainSpeed);
 
 			return Util.ApplyPercentageModifiers(Info.Speed, modifiers);
 		}

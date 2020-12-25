@@ -30,16 +30,19 @@ namespace OpenRA.Mods.Common.Traits.Sound
 		public override object Create(ActorInitializer init) { return new AnnounceOnSeen(init.Self, this); }
 	}
 
-	public class AnnounceOnSeen : INotifyDiscovered
+	public class AnnounceOnSeen : INotifyDiscovered, INotifyCreated
 	{
 		public readonly AnnounceOnSeenInfo Info;
-
-		readonly Lazy<RadarPings> radarPings;
+		RadarPings radarPings;
 
 		public AnnounceOnSeen(Actor self, AnnounceOnSeenInfo info)
 		{
 			Info = info;
-			radarPings = Exts.Lazy(() => self.World.WorldActor.Trait<RadarPings>());
+		}
+
+		void INotifyCreated.Created(Actor self)
+		{
+			radarPings = self.World.WorldActor.TraitOrDefault<RadarPings>();
 		}
 
 		public void OnDiscovered(Actor self, Player discoverer, bool playNotification)
@@ -58,7 +61,7 @@ namespace OpenRA.Mods.Common.Traits.Sound
 
 			// Radar notification
 			if (Info.PingRadar)
-				radarPings.Value?.Add(() => true, self.CenterPosition, Color.Red, 50);
+				radarPings?.Add(() => true, self.CenterPosition, Color.Red, 50);
 		}
 	}
 }

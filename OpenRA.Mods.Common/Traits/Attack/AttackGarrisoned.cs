@@ -28,7 +28,7 @@ namespace OpenRA.Mods.Common.Traits
 	}
 
 	[Desc("Cargo can fire their weapons out of fire ports.")]
-	public class AttackGarrisonedInfo : AttackFollowInfo, IRulesetLoaded, Requires<CargoInfo>
+	public class AttackGarrisonedInfo : AttackFollowInfo, Requires<CargoInfo>, Requires<BodyOrientationInfo>
 	{
 		[FieldLoader.Require]
 		[Desc("Fire port offsets in local coordinates.")]
@@ -78,7 +78,7 @@ namespace OpenRA.Mods.Common.Traits
 	public class AttackGarrisoned : AttackFollow, INotifyPassengerEntered, INotifyPassengerExited, IRender
 	{
 		public readonly new AttackGarrisonedInfo Info;
-		Lazy<BodyOrientation> coords;
+		readonly BodyOrientation coords;
 		List<Armament> armaments;
 		List<AnimationWithOffset> muzzles;
 		Dictionary<Actor, IFacing> paxFacing;
@@ -89,7 +89,7 @@ namespace OpenRA.Mods.Common.Traits
 			: base(self, info)
 		{
 			Info = info;
-			coords = Exts.Lazy(() => self.Trait<BodyOrientation>());
+			coords = self.Trait<BodyOrientation>();
 			armaments = new List<Armament>();
 			muzzles = new List<AnimationWithOffset>();
 			paxFacing = new Dictionary<Actor, IFacing>();
@@ -139,8 +139,8 @@ namespace OpenRA.Mods.Common.Traits
 
 		WVec PortOffset(Actor self, FirePort p)
 		{
-			var bodyOrientation = coords.Value.QuantizeOrientation(self, self.Orientation);
-			return coords.Value.LocalToWorld(p.Offset.Rotate(bodyOrientation));
+			var bodyOrientation = coords.QuantizeOrientation(self, self.Orientation);
+			return coords.LocalToWorld(p.Offset.Rotate(bodyOrientation));
 		}
 
 		public override void DoAttack(Actor self, in Target target)

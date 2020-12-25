@@ -36,7 +36,7 @@ namespace OpenRA.Graphics
 		readonly HardwarePalette palette = new HardwarePalette();
 		readonly Dictionary<string, PaletteReference> palettes = new Dictionary<string, PaletteReference>();
 		readonly IRenderTerrain terrainRenderer;
-		readonly Lazy<DebugVisualizations> debugVis;
+		readonly DebugVisualizations debugVis;
 		readonly Func<string, PaletteReference> createPaletteReference;
 		readonly bool enableDepthBuffer;
 
@@ -71,8 +71,7 @@ namespace OpenRA.Graphics
 			Theater = new Theater(world.Map.Rules.TileSet);
 			TerrainLighting = world.WorldActor.TraitOrDefault<ITerrainLighting>();
 			terrainRenderer = world.WorldActor.TraitOrDefault<IRenderTerrain>();
-
-			debugVis = Exts.Lazy(() => world.WorldActor.TraitOrDefault<DebugVisualizations>());
+			debugVis = world.WorldActor.TraitOrDefault<DebugVisualizations>();
 		}
 
 		public void UpdatePalettesForPlayer(string internalName, Color color, bool replaceExisting)
@@ -247,9 +246,9 @@ namespace OpenRA.Graphics
 			if (World.WorldActor.Disposed)
 				return;
 
-			if (debugVis.Value != null && lastDepthPreviewEnabled != debugVis.Value.DepthBuffer)
+			if (debugVis != null && lastDepthPreviewEnabled != debugVis.DepthBuffer)
 			{
-				lastDepthPreviewEnabled = debugVis.Value.DepthBuffer;
+				lastDepthPreviewEnabled = debugVis.DepthBuffer;
 				Game.Renderer.WorldSpriteRenderer.SetDepthPreviewEnabled(lastDepthPreviewEnabled);
 			}
 
@@ -301,7 +300,7 @@ namespace OpenRA.Graphics
 			Game.Renderer.DisableAntialiasingFilter();
 
 			// Engine debugging overlays
-			if (debugVis.Value != null && debugVis.Value.RenderGeometry)
+			if (debugVis != null && debugVis.RenderGeometry)
 			{
 				for (var i = 0; i < preparedRenderables.Count; i++)
 					preparedRenderables[i].RenderDebugGeometry(this);
@@ -313,7 +312,7 @@ namespace OpenRA.Graphics
 					preparedAnnotationRenderables[i].RenderDebugGeometry(this);
 			}
 
-			if (debugVis.Value != null && debugVis.Value.ScreenMap)
+			if (debugVis != null && debugVis.ScreenMap)
 			{
 				foreach (var r in World.ScreenMap.RenderBounds(World.RenderPlayer))
 				{

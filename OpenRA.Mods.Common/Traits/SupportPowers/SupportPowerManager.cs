@@ -24,24 +24,28 @@ namespace OpenRA.Mods.Common.Traits
 		public override object Create(ActorInitializer init) { return new SupportPowerManager(init); }
 	}
 
-	public class SupportPowerManager : ITick, IResolveOrder, ITechTreeElement
+	public class SupportPowerManager : ITick, IResolveOrder, ITechTreeElement, INotifyCreated
 	{
 		public readonly Actor Self;
 		public readonly Dictionary<string, SupportPowerInstance> Powers = new Dictionary<string, SupportPowerInstance>();
 
 		public readonly DeveloperMode DevMode;
 		public readonly TechTree TechTree;
-		public readonly Lazy<RadarPings> RadarPings;
+		public RadarPings RadarPings { get; private set; }
 
 		public SupportPowerManager(ActorInitializer init)
 		{
 			Self = init.Self;
 			DevMode = Self.Trait<DeveloperMode>();
 			TechTree = Self.Trait<TechTree>();
-			RadarPings = Exts.Lazy(() => init.World.WorldActor.TraitOrDefault<RadarPings>());
 
 			init.World.ActorAdded += ActorAdded;
 			init.World.ActorRemoved += ActorRemoved;
+		}
+
+		void INotifyCreated.Created(Actor self)
+		{
+			RadarPings = self.World.WorldActor.TraitOrDefault<RadarPings>();
 		}
 
 		static string MakeKey(SupportPower sp)
