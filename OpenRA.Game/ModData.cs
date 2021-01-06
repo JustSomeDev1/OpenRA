@@ -29,6 +29,7 @@ namespace OpenRA
 		public readonly IPackageLoader[] PackageLoaders;
 		public readonly ISoundLoader[] SoundLoaders;
 		public readonly ISpriteLoader[] SpriteLoaders;
+		public readonly ITerrainLoader TerrainLoader;
 		public readonly ISpriteSequenceLoader SpriteSequenceLoader;
 		public readonly IModelSequenceLoader ModelSequenceLoader;
 		public readonly HotkeyManager Hotkeys;
@@ -40,8 +41,8 @@ namespace OpenRA
 		readonly Lazy<Ruleset> defaultRules;
 		public Ruleset DefaultRules { get { return defaultRules.Value; } }
 
-		readonly Lazy<IReadOnlyDictionary<string, TileSet>> defaultTileSets;
-		public IReadOnlyDictionary<string, TileSet> DefaultTileSets { get { return defaultTileSets.Value; } }
+		readonly Lazy<IReadOnlyDictionary<string, ITerrainInfo>> defaultTerrainInfo;
+		public IReadOnlyDictionary<string, ITerrainInfo> DefaultTerrainInfo { get { return defaultTerrainInfo.Value; } }
 
 		readonly Lazy<IReadOnlyDictionary<string, SequenceProvider>> defaultSequences;
 		public IReadOnlyDictionary<string, SequenceProvider> DefaultSequences { get { return defaultSequences.Value; } }
@@ -72,6 +73,14 @@ namespace OpenRA
 			SoundLoaders = ObjectCreator.GetLoaders<ISoundLoader>(Manifest.SoundFormats, "sound");
 			SpriteLoaders = ObjectCreator.GetLoaders<ISpriteLoader>(Manifest.SpriteFormats, "sprite");
 
+			var terrainFormat = Manifest.Get<TerrainFormat>();
+			var terrainLoader = ObjectCreator.FindType(terrainFormat.Type + "Loader");
+			var terrainCtor = terrainLoader?.GetConstructor(new[] { typeof(ModData) });
+			if (terrainLoader == null || !terrainLoader.GetInterfaces().Contains(typeof(ITerrainLoader)) || terrainCtor == null)
+				throw new InvalidOperationException("Unable to find a terrain loader for type '{0}'.".F(terrainFormat.Type));
+
+			TerrainLoader = (ITerrainLoader)terrainCtor.Invoke(new[] { this });
+
 			var sequenceFormat = Manifest.Get<SpriteSequenceFormat>();
 			var sequenceLoader = ObjectCreator.FindType(sequenceFormat.Type + "Loader");
 			var sequenceCtor = sequenceLoader != null ? sequenceLoader.GetConstructor(new[] { typeof(ModData) }) : null;
@@ -92,22 +101,22 @@ namespace OpenRA
 			Hotkeys = new HotkeyManager(ModFiles, Game.Settings.Keys, Manifest);
 
 			defaultRules = Exts.Lazy(() => Ruleset.LoadDefaults(this));
-			defaultTileSets = Exts.Lazy(() =>
+			defaultTerrainInfo = Exts.Lazy(() =>
 			{
-				var items = new Dictionary<string, TileSet>();
+				var items = new Dictionary<string, ITerrainInfo>();
 
 				foreach (var file in Manifest.TileSets)
 				{
-					var t = new TileSet(DefaultFileSystem, file);
+					var t = TerrainLoader.ParseTerrain(DefaultFileSystem, file);
 					items.Add(t.Id, t);
 				}
 
-				return (IReadOnlyDictionary<string, TileSet>)(new ReadOnlyDictionary<string, TileSet>(items));
+				return (IReadOnlyDictionary<string, ITerrainInfo>)(new ReadOnlyDictionary<string, ITerrainInfo>(items));
 			});
 
 			defaultSequences = Exts.Lazy(() =>
 			{
-				var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Key, null));
+				var items = DefaultTerrainInfo.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Key, null));
 				return (IReadOnlyDictionary<string, SequenceProvider>)(new ReadOnlyDictionary<string, SequenceProvider>(items));
 			});
 

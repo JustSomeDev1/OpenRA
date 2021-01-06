@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenRA.Graphics;
+using OpenRA.Mods.Common.Terrain;
 using OpenRA.Traits;
 
 namespace OpenRA.Mods.Common.Traits
@@ -19,7 +20,7 @@ namespace OpenRA.Mods.Common.Traits
 	public enum EditorCursorType { None, Actor, TerrainTemplate, Resource }
 
 	[Desc("Required for the map editor to work. Attach this to the world actor.")]
-	public class EditorCursorLayerInfo : TraitInfo, Requires<EditorActorLayerInfo>
+	public class EditorCursorLayerInfo : TraitInfo, Requires<EditorActorLayerInfo>, Requires<ITiledTerrainRendererInfo>
 	{
 		public readonly WAngle PreviewFacing = new WAngle(384);
 
@@ -30,6 +31,7 @@ namespace OpenRA.Mods.Common.Traits
 	{
 		readonly EditorCursorLayerInfo info;
 		readonly EditorActorLayer editorLayer;
+		readonly ITiledTerrainRenderer terrainRenderer;
 		readonly World world;
 
 		public int CurrentToken { get; private set; }
@@ -51,6 +53,7 @@ namespace OpenRA.Mods.Common.Traits
 			this.info = info;
 			world = self.World;
 			editorLayer = self.Trait<EditorActorLayer>();
+			terrainRenderer = self.Trait<ITiledTerrainRenderer>();
 
 			Type = EditorCursorType.None;
 		}
@@ -71,24 +74,7 @@ namespace OpenRA.Mods.Common.Traits
 					var pos = world.Map.CenterOfCell(cell);
 
 					if (Type == EditorCursorType.TerrainTemplate)
-					{
-						var i = 0;
-						for (var y = 0; y < TerrainTemplate.Size.Y; y++)
-						{
-							for (var x = 0; x < TerrainTemplate.Size.X; x++)
-							{
-								var tile = new TerrainTile(TerrainTemplate.Id, (byte)i++);
-								if (!world.Map.Rules.TileSet.TryGetTileInfo(tile, out var tileInfo))
-									continue;
-
-								var sprite = wr.Theater.TileSprite(tile, 0);
-								var offset = world.Map.Offset(new CVec(x, y), tileInfo.Height);
-								var palette = wr.Palette(TerrainTemplate.Palette ?? TileSet.TerrainPaletteInternalName);
-
-								terrainOrResourcePreview.Add(new SpriteRenderable(sprite, pos, offset, 0, palette, 1, false));
-							}
-						}
-					}
+						terrainOrResourcePreview.AddRange(terrainRenderer.RenderPreview(wr, TerrainTemplate, pos));
 					else
 					{
 						var variant = Resource.Sequences.FirstOrDefault();
