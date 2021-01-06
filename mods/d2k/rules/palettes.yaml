@@ -28,10 +28,12 @@
 		G: 0
 		B: 0
 		A: 140
-	PaletteFromEmbeddedSpritePalette@moveflash-base:
+	PaletteFromRGBA@dummy-moveflash-base:
 		Name: moveflash-base
-		Image: moveflsh
-		Sequence: idle
+		R: 0
+		G: 0
+		B: 0
+		A: 180
 	PaletteFromScaledPalette@moveflash:
 		Name: moveflash
 		BasePalette: moveflash-base
@@ -51,10 +53,12 @@
 		BasePalette: d2k
 		AllowModifiers: false
 		Offset: -64
-	PaletteFromEmbeddedSpritePalette@shroud:
+	PaletteFromRGBA@dummy-shroud:
 		Name: shroud
-		Image: shroud
-		Sequence: palette
+		R: 0
+		G: 0
+		B: 0
+		A: 180
 	D2kFogPalette@fog:
 		Name: fog
 		BasePalette: shroud
