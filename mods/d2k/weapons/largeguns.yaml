@@ -87,10 +87,10 @@ DevBullet:
 	Projectile: Bullet
 		Speed: 192
 		Blockable: false
-		Shadow: true
 		LaunchAngle: 62
 		ContrailLength: 20
 		Image: 155mm
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 4500
 		Spread: 1c0

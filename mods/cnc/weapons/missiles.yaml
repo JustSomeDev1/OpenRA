@@ -9,12 +9,12 @@
 		Blockable: false
 		Inaccuracy: 128
 		Image: DRAGON
-		Shadow: true
 		HorizontalRateOfTurn: 60
 		TrailImage: smokey
 		ContrailLength: 8
 		Speed: 298
 		RangeLimit: 7c204
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 128
 		Damage: 2500
@@ -147,12 +147,12 @@ MammothMissiles:
 	Projectile: Bullet
 		Blockable: false
 		Image: DRAGON
-		Shadow: true
 		TrailImage: smokey
 		Inaccuracy: 853
 		LaunchAngle: 62
 		ContrailLength: 10
 		Speed: 341
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 683
 		ValidTargets: Ground

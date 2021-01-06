@@ -12,6 +12,7 @@
 using System.Collections.Generic;
 using OpenRA.GameRules;
 using OpenRA.Graphics;
+using OpenRA.Primitives;
 using OpenRA.Traits;
 
 namespace OpenRA.Mods.Common.Projectiles
@@ -35,10 +36,8 @@ namespace OpenRA.Mods.Common.Projectiles
 		[Desc("Palette is a player palette BaseName")]
 		public readonly bool IsPlayerPalette = false;
 
-		public readonly bool Shadow = false;
-
-		[PaletteReference]
-		public readonly string ShadowPalette = "shadow";
+		[Desc("Color to draw shadow (disabled if alpha is 0).")]
+		public readonly Color ShadowColor = Color.FromArgb(0);
 
 		[Desc("Projectile movement vector per tick (forward, right, up), use negative values for opposite directions.")]
 		public readonly WVec Velocity = WVec.Zero;
@@ -111,12 +110,15 @@ namespace OpenRA.Mods.Common.Projectiles
 			var world = args.SourceActor.World;
 			if (!world.FogObscures(pos))
 			{
-				if (info.Shadow)
+				if (info.ShadowColor.A > 0)
 				{
 					var dat = world.Map.DistanceAboveTerrain(pos);
 					var shadowPos = pos - new WVec(0, 0, dat.Length);
-					foreach (var r in anim.Render(shadowPos, wr.Palette(info.ShadowPalette)))
-						yield return r;
+					var shadow = new float3(info.ShadowColor.R, info.ShadowColor.G, info.ShadowColor.B) / 255f;
+					foreach (var r in anim.Render(shadowPos, wr.Palette(info.Palette)))
+						yield return ((IModifyableRenderable)r)
+							.WithTint(shadow, ((IModifyableRenderable)r).TintModifiers | TintModifiers.ReplaceColor)
+							.WithAlpha(info.ShadowColor.A / 255f);
 				}
 
 				var palette = wr.Palette(info.Palette + (info.IsPlayerPalette ? args.SourceActor.Owner.InternalName : ""));

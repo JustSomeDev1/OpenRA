@@ -67,7 +67,7 @@ OrniBomb:
 		Image: BOMBS
 		Velocity: 0, 0, -64
 		Acceleration: 0, 0, 0
-		Shadow: true
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 7500 #400 in original, reduce when bombers can do multiple passes
 		Spread: 1c0
@@ -221,7 +221,7 @@ grenade:
 		Inaccuracy: 128
 		InaccuracyType: PerCellIncrement
 		Image: grenade
-		Shadow: true
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 1500
 		Spread: 1c0

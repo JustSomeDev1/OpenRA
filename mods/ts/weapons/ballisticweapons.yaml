@@ -5,9 +5,9 @@
 	Projectile: Bullet
 		Speed: 682
 		Image: 120mm
-		Shadow: true
 		LaunchAngle: 75
 		Palette: ra
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 108
 		Falloff: 100, 50, 25, 12, 6, 3, 0
@@ -138,12 +138,12 @@ Grenade:
 	Projectile: Bullet
 		Speed: 226
 		Blockable: true
-		Shadow: true
 		LaunchAngle: 60
 		Inaccuracy: 0
 		Image: DISCUS
 		Palette: effect
 		BounceCount: 2
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 154
 		Damage: 4000

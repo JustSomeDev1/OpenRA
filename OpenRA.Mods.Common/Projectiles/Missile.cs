@@ -37,8 +37,8 @@ namespace OpenRA.Mods.Common.Projectiles
 		[Desc("Palette is a player palette BaseName")]
 		public readonly bool IsPlayerPalette = false;
 
-		[Desc("Should the projectile's shadow be rendered?")]
-		public readonly bool Shadow = false;
+		[Desc("Color to draw shadow (disabled if alpha is 0).")]
+		public readonly Color ShadowColor = Color.FromArgb(0);
 
 		[Desc("Minimum vertical launch angle (pitch).")]
 		public readonly WAngle MinimumLaunchAngle = new WAngle(-64);
@@ -912,12 +912,15 @@ namespace OpenRA.Mods.Common.Projectiles
 			var world = args.SourceActor.World;
 			if (!world.FogObscures(pos))
 			{
-				if (info.Shadow)
+				if (info.ShadowColor.A > 0)
 				{
 					var dat = world.Map.DistanceAboveTerrain(pos);
 					var shadowPos = pos - new WVec(0, 0, dat.Length);
-					foreach (var r in anim.Render(shadowPos, wr.Palette("shadow")))
-						yield return r;
+					var shadow = new float3(info.ShadowColor.R, info.ShadowColor.G, info.ShadowColor.B) / 255f;
+					foreach (var r in anim.Render(shadowPos, wr.Palette(info.Palette)))
+						yield return ((IModifyableRenderable)r)
+							.WithTint(shadow, ((IModifyableRenderable)r).TintModifiers | TintModifiers.ReplaceColor)
+							.WithAlpha(info.ShadowColor.A / 255f);
 				}
 
 				var palette = wr.Palette(info.Palette + (info.IsPlayerPalette ? args.SourceActor.Owner.InternalName : ""));

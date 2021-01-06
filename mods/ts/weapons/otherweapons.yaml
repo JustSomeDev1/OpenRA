@@ -33,8 +33,8 @@ Bomb:
 		Velocity: 72, 0, -90
 		Acceleration: 0, 0, -8
 		Image: 120mm
-		Shadow: true
 		Palette: ra
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 512
 		Falloff: 100, 50, 25, 12, 6, 3, 0
@@ -72,9 +72,9 @@ FiendShard:
 		Speed: 213
 		Image: CRYSTAL4
 		Inaccuracy: 512
-		Shadow: true
 		LaunchAngle: 60
 		Palette: greentiberium
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 3500
 		Versus:
@@ -137,8 +137,8 @@ Veins:
 		LaunchAngle: 80, 192
 		Image: dbrissm
 		Sequences: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-		Shadow: true
 		Blockable: false
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 200
 		Falloff: 100, 100, 0

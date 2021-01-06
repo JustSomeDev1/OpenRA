@@ -118,12 +118,12 @@ CyCannon:
 		MaximumLaunchSpeed: 192
 		Blockable: false
 		HorizontalRateOfTurn: 8
-		Shadow: true
 		Image: TORPEDO
 		MinimumLaunchSpeed: 75
 		Speed: 384
 		RangeLimit: 8c0
 		TerrainHeightAware: true
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 43
 		Damage: 12000
@@ -143,9 +143,9 @@ Proton:
 	Projectile: Bullet
 		Speed: 341
 		Blockable: false
-		Shadow: true
 		Inaccuracy: 128
 		Image: TORPEDO
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 128
 		Damage: 2000

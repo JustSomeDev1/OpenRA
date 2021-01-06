@@ -43,7 +43,6 @@
 	Range: 5c512
 	MinRange: 0c512
 	Projectile: Missile
-		Shadow: true
 		HorizontalRateOfTurn: 12
 		RangeLimit: 6c614
 		CruiseAltitude: 1c0
@@ -52,6 +51,7 @@
 		Image: MISSILE2
 		TrailImage: large_trail
 		Speed: 288
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 4800
 		Versus:

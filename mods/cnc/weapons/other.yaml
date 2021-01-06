@@ -72,7 +72,7 @@ Napalm:
 	-Projectile:
 	Projectile: GravityBomb
 		Image: BOMBLET
-		Shadow: true
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Spread: 341
 		Damage: 3000

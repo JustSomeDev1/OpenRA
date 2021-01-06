@@ -7,9 +7,9 @@ Debris:
 		LaunchAngle: 128, 192
 		Inaccuracy: 1c256
 		Image: shrapnel
-		Shadow: true
 		BounceCount: 3
 		BounceRangeModifier: 20
+		ShadowColor: 0000008C
 	Warhead@1Dam: SpreadDamage
 		Damage: 1500
 		Spread: 512

@@ -47,12 +47,8 @@ namespace OpenRA.Mods.Common.Projectiles
 		[Desc("Palette is a player palette BaseName")]
 		public readonly bool IsPlayerPalette = false;
 
-		[Desc("Does this projectile have a shadow?")]
-		public readonly bool Shadow = false;
-
-		[PaletteReference]
-		[Desc("Palette to use for this projectile's shadow if Shadow is true.")]
-		public readonly string ShadowPalette = "shadow";
+		[Desc("Color to draw shadow (disabled if alpha is 0).")]
+		public readonly Color ShadowColor = Color.FromArgb(0);
 
 		[Desc("Trail animation.")]
 		public readonly string TrailImage = null;
@@ -282,12 +278,15 @@ namespace OpenRA.Mods.Common.Projectiles
 			var world = args.SourceActor.World;
 			if (!world.FogObscures(pos))
 			{
-				if (info.Shadow)
+				if (info.ShadowColor.A > 0)
 				{
 					var dat = world.Map.DistanceAboveTerrain(pos);
 					var shadowPos = pos - new WVec(0, 0, dat.Length);
-					foreach (var r in anim.Render(shadowPos, wr.Palette(info.ShadowPalette)))
-						yield return r;
+					var shadow = new float3(info.ShadowColor.R, info.ShadowColor.G, info.ShadowColor.B) / 255f;
+					foreach (var r in anim.Render(shadowPos, wr.Palette(info.Palette)))
+						yield return ((IModifyableRenderable)r)
+							.WithTint(shadow, ((IModifyableRenderable)r).TintModifiers | TintModifiers.ReplaceColor)
+							.WithAlpha(info.ShadowColor.A / 255f);
 				}
 
 				var palette = wr.Palette(info.Palette + (info.IsPlayerPalette ? args.SourceActor.Owner.InternalName : ""));

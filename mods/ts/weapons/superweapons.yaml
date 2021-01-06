@@ -122,9 +122,9 @@ EMPulseCannon:
 	Projectile: Bullet
 		Speed: 425
 		Blockable: false
-		Shadow: true
 		LaunchAngle: 96
 		Image: pulsball
+		ShadowColor: 0000008C
 	Warhead@1Eff: CreateEffect
 		Explosions: pulse_explosion
 		ExplosionPalette: effect-ignore-lighting-alpha75
