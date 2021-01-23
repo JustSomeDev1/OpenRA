@@ -176,7 +176,7 @@ namespace OpenRA.Mods.Common.Traits
 				// prevent (Added|Removed)FromWorld from firing during Actor.ChangeOwner
 				skipTriggerUpdate = true;
 				var previousOwner = self.Owner;
-				self.ChangeOwner(captor.Owner);
+				self.ChangeOwnerSync(captor.Owner);
 
 				if (self.Owner == self.World.LocalPlayer)
 					w.Add(new FlashTarget(self));

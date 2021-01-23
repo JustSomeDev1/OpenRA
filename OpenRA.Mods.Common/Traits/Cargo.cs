@@ -80,6 +80,9 @@ namespace OpenRA.Mods.Common.Traits
 			"A dictionary of [actor id]: [condition].")]
 		public readonly Dictionary<string, string> PassengerConditions = new Dictionary<string, string>();
 
+		[Desc("A list of capture types that will also capture cargo. Leave empty for all capture types.")]
+		public readonly BitSet<CaptureType> CapturePassengerCaptureTypes = default;
+
 		[GrantedConditionReference]
 		public IEnumerable<string> LinterPassengerConditions { get { return PassengerConditions.Values; } }
 
@@ -87,7 +90,7 @@ namespace OpenRA.Mods.Common.Traits
 	}
 
 	public class Cargo : IIssueOrder, IResolveOrder, IOrderVoice, INotifyCreated, INotifyKilled,
-		INotifyOwnerChanged, INotifySold, INotifyActorDisposing, IIssueDeployOrder,
+		INotifyOwnerChanged, INotifyCapture, INotifySold, INotifyActorDisposing, IIssueDeployOrder,
 		ITransformActorInitModifier
 	{
 		public readonly CargoInfo Info;
@@ -461,13 +464,53 @@ namespace OpenRA.Mods.Common.Traits
 			});
 		}
 
+		Player newPassengerOwner;
+		bool passengerOwnerChangeWasCapture;
+		BitSet<CaptureType> passengerCaptureTypes;
+		bool passengerOwnerChangePending;
+
 		void INotifyOwnerChanged.OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)
 		{
 			if (cargo == null)
 				return;
 
-			foreach (var p in Passengers)
-				p.ChangeOwner(newOwner);
+			// Defer passenger owner changes to a frame end task to give INotifyCapture a chance to opt-out of the capture
+			// Owner changes not associated with capturing will always propagate to cargo
+			newPassengerOwner = newOwner;
+			passengerOwnerChangeWasCapture = false;
+			if (passengerOwnerChangePending)
+				return;
+
+			passengerOwnerChangePending = true;
+			self.World.AddFrameEndTask(w =>
+			{
+				passengerOwnerChangePending = false;
+
+				// Owner change may have been cancelled by INotifyCapture
+				if (newPassengerOwner == null)
+					return;
+
+				foreach (var p in Passengers)
+				{
+					p.ChangeOwnerSync(newOwner);
+					if (passengerOwnerChangeWasCapture)
+						foreach (var t in p.TraitsImplementing<INotifyCapture>())
+							t.OnCapture(p, self, oldOwner, self.Owner, passengerCaptureTypes);
+				}
+			});
+		}
+
+		void INotifyCapture.OnCapture(Actor self, Actor captor, Player oldOwner, Player newOwner, BitSet<CaptureType> captureTypes)
+		{
+			if (newPassengerOwner != newOwner)
+				return;
+
+			passengerOwnerChangeWasCapture = true;
+			passengerCaptureTypes = captureTypes;
+
+			// Cancel the owner change scheduled by INotifyOwnerChanged
+			if (!Info.CapturePassengerCaptureTypes.IsEmpty && !Info.CapturePassengerCaptureTypes.Overlaps(captureTypes))
+				newPassengerOwner = null;
 		}
 
 		void ITransformActorInitModifier.ModifyTransformActorInit(Actor self, TypeDictionary init)
