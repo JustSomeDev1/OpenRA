@@ -35,13 +35,13 @@ namespace OpenRA.Mods.Common.Traits
 		public readonly bool GenericStancePrefix = true;
 
 		[Desc("Prefix to display in the tooltip for allied units.")]
-		public readonly string AllyPrefix = "Allied";
+		public readonly string AllyPrefix = "allied-tooltip";
 
 		[Desc("Prefix to display in the tooltip for neutral units.")]
-		public readonly string NeutralPrefix = null;
+		public readonly string NeutralPrefix = "neutral-tooltip";
 
 		[Desc("Prefix to display in the tooltip for enemy units.")]
-		public readonly string EnemyPrefix = "Enemy";
+		public readonly string EnemyPrefix = "enemy-tooltip";
 
 		[Desc("Player stances that the generic name should be shown to.")]
 		public readonly PlayerRelationship GenericVisibility = PlayerRelationship.None;
@@ -54,18 +54,22 @@ namespace OpenRA.Mods.Common.Traits
 		public string TooltipForPlayerStance(PlayerRelationship relationship)
 		{
 			if (relationship == PlayerRelationship.None || !GenericVisibility.HasRelationship(relationship))
-				return Name;
+				return Game.Translate(Name);
+
+			var genericName = GenericName.ToLowerInvariant();
+			var gender = Game.TranslationAttribute(genericName, "gender");
+			var arguments = Translation.Arguments("gender", gender, "generic-name", Game.Translate(genericName));
 
 			if (GenericStancePrefix && !string.IsNullOrEmpty(AllyPrefix) && relationship == PlayerRelationship.Ally)
-				return AllyPrefix + " " + GenericName;
+				return Game.Translate(AllyPrefix, arguments);
 
 			if (GenericStancePrefix && !string.IsNullOrEmpty(NeutralPrefix) && relationship == PlayerRelationship.Neutral)
-				return NeutralPrefix + " " + GenericName;
+				return Game.Translate(NeutralPrefix, arguments);
 
 			if (GenericStancePrefix && !string.IsNullOrEmpty(EnemyPrefix) && relationship == PlayerRelationship.Enemy)
-				return EnemyPrefix + " " + GenericName;
+				return Game.Translate(EnemyPrefix, arguments);
 
-			return GenericName;
+			return Game.Translate(genericName);
 		}
 
 		public bool IsOwnerRowVisible { get { return ShowOwnerRow; } }

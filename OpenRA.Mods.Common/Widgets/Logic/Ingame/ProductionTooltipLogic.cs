@@ -45,7 +45,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			var descFont = Game.Renderer.Fonts[descLabel.Font];
 			var requiresFont = Game.Renderer.Fonts[requiresLabel.Font];
 			var formatBuildTime = new CachedTransform<int, string>(time => WidgetUtils.FormatTime(time, world.Timestep));
-			var requiresFormat = requiresLabel.Text;
+			var requiresText = requiresLabel.Text;
 
 			ActorInfo lastActor = null;
 			Hotkey lastHotkey = Hotkey.Invalid;
@@ -68,7 +68,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					return;
 
 				var tooltip = actor.TraitInfos<TooltipInfo>().FirstOrDefault(info => info.EnabledByDefault);
-				var name = tooltip != null ? tooltip.Name : actor.Name;
+				var name = tooltip != null ? Game.Translate(tooltip.Name) : Game.Translate(actor.Name);
 				var buildable = actor.TraitInfo<BuildableInfo>();
 
 				var cost = 0;
@@ -96,13 +96,13 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					hotkeyLabel.Bounds.X = nameSize.X + 2 * nameLabel.Bounds.X;
 				}
 
-				var prereqs = buildable.Prerequisites.Select(a => ActorName(mapRules, a))
+				var prereqs = buildable.Prerequisites.Select(a => Game.Translate(ActorName(mapRules, a)))
 					.Where(s => !s.StartsWith("~", StringComparison.Ordinal) && !s.StartsWith("!", StringComparison.Ordinal));
 
 				var requiresSize = int2.Zero;
 				if (prereqs.Any())
 				{
-					requiresLabel.Text = requiresFormat.F(prereqs.JoinWith(", "));
+					requiresLabel.Text = Game.Translate(requiresText, Translation.Arguments("prereqs", prereqs.JoinWith(", ")));
 					requiresSize = requiresFont.Measure(requiresLabel.Text);
 					requiresLabel.Visible = true;
 					descLabel.Bounds.Y = descLabelY + requiresLabel.Bounds.Height;
@@ -136,7 +136,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				costLabel.GetColor = () => pr.Cash + pr.Resources >= cost ? Color.White : Color.Red;
 				var costSize = font.Measure(costLabel.Text);
 
-				descLabel.Text = buildable.Description.Replace("\\n", "\n");
+				// TODO: Remove Replace() after all strings are converted to Fluent
+				descLabel.Text = Game.Translate(buildable.Description).Replace("\\n", "\n");
 				var descSize = descFont.Measure(descLabel.Text);
 				descLabel.Bounds.Width = descSize.X;
 				descLabel.Bounds.Height = descSize.Y + descLabelPadding;
