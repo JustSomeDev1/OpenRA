@@ -45,6 +45,8 @@ namespace OpenRA
 		static WorldRenderer worldRenderer;
 		static string modLaunchWrapper;
 
+		internal static Translation Translation;
+
 		internal static OrderManager OrderManager;
 		static Server.Server server;
 
@@ -265,6 +267,11 @@ namespace OpenRA
 			Settings = new Settings(Path.Combine(Platform.SupportDir, "settings.yaml"), args);
 		}
 
+		public static void InitializeTranslation()
+		{
+			Translation = new Translation(Settings.Player.Language, ModData.Manifest.Translations, ModData.DefaultFileSystem);
+		}
+
 		public static RunStatus InitializeAndRun(string[] args)
 		{
 			Initialize(new Arguments(args));
@@ -407,6 +414,7 @@ namespace OpenRA
 				Console.WriteLine("\t{0}: {1} ({2})", mod.Key, mod.Value.Title, mod.Value.Version);
 
 			InitializeMod(modID, args);
+			InitializeTranslation();
 		}
 
 		public static void InitializeMod(string mod, Arguments args)
@@ -904,6 +912,22 @@ namespace OpenRA
 		public static void Debug(string s, params object[] args)
 		{
 			AddSystemLine("Debug", string.Format(s, args));
+		}
+
+		public static string Translate(string key, IDictionary<string, object> args = null, string attribute = null)
+		{
+			if (Translation == null)
+				return null;
+
+			return Translation.GetFormattedMessage(key, args, attribute);
+		}
+
+		public static string TranslationAttribute(string key, string attribute = null)
+		{
+			if (Translation == null)
+				return null;
+
+			return Translation.GetAttribute(key, attribute);
 		}
 
 		public static void Disconnect()
