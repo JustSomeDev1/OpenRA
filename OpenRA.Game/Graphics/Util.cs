@@ -10,6 +10,7 @@
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
 using OpenRA.FileFormats;
 using OpenRA.Primitives;
 
@@ -61,7 +62,7 @@ namespace OpenRA.Graphics
 			vertices[nv + 5] = new Vertex(a, r.Left, r.Top, sl, st, paletteTextureIndex, fAttribC, tint, alpha);
 		}
 
-		public static void FastCopyIntoChannel(Sprite dest, byte[] src, SpriteFrameType srcType)
+		public static void FastCopyIntoChannel(Sprite dest, Span<byte> src, SpriteFrameType srcType)
 		{
 			var destData = dest.Sheet.GetData();
 			var width = dest.Bounds.Width;
@@ -70,51 +71,46 @@ namespace OpenRA.Graphics
 			if (dest.Channel == TextureChannel.RGBA)
 			{
 				var destStride = dest.Sheet.Size.Width;
-				unsafe
+
+				// Cast the data to an int array so we can copy the src data directly
+				var data = MemoryMarshal.Cast<byte, int>(destData);
+				var x = dest.Bounds.Left;
+				var y = dest.Bounds.Top;
+
+				var k = 0;
+				for (var j = 0; j < height; j++)
 				{
-					// Cast the data to an int array so we can copy the src data directly
-					fixed (byte* bd = &destData[0])
+					for (var i = 0; i < width; i++)
 					{
-						var data = (int*)bd;
-						var x = dest.Bounds.Left;
-						var y = dest.Bounds.Top;
-
-						var k = 0;
-						for (var j = 0; j < height; j++)
+						byte r, g, b, a;
+						switch (srcType)
 						{
-							for (var i = 0; i < width; i++)
+							case SpriteFrameType.Bgra32:
+							case SpriteFrameType.Bgr24:
 							{
-								byte r, g, b, a;
-								switch (srcType)
-								{
-									case SpriteFrameType.Bgra32:
-									case SpriteFrameType.Bgr24:
-									{
-										b = src[k++];
-										g = src[k++];
-										r = src[k++];
-										a = srcType == SpriteFrameType.Bgra32 ? src[k++] : (byte)255;
-										break;
-									}
-
-									case SpriteFrameType.Rgba32:
-									case SpriteFrameType.Rgb24:
-									{
-										r = src[k++];
-										g = src[k++];
-										b = src[k++];
-										a = srcType == SpriteFrameType.Rgba32 ? src[k++] : (byte)255;
-										break;
-									}
-
-									default:
-										throw new InvalidOperationException("Unknown SpriteFrameType {0}".F(srcType));
-								}
-
-								var cc = Color.FromArgb(a, r, g, b);
-								data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
+								b = src[k++];
+								g = src[k++];
+								r = src[k++];
+								a = srcType == SpriteFrameType.Bgra32 ? src[k++] : (byte)255;
+								break;
 							}
+
+							case SpriteFrameType.Rgba32:
+							case SpriteFrameType.Rgb24:
+							{
+								r = src[k++];
+								g = src[k++];
+								b = src[k++];
+								a = srcType == SpriteFrameType.Rgba32 ? src[k++] : (byte)255;
+								break;
+							}
+
+							default:
+								throw new InvalidOperationException("Unknown SpriteFrameType {0}".F(srcType));
 						}
+
+						var cc = Color.FromArgb(a, r, g, b);
+						data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
 					}
 				}
 			}
