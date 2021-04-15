@@ -445,8 +445,12 @@ namespace OpenRA.Mods.Common.Activities
 				// Having non-zero progress in the first tick means that this MovePart is following on from
 				// a previous MovePart that has just completed during the same tick. In this case, we want to
 				// apply the carried over progress but not evaluate a full new step until the next tick.
+				// A progress of '-1' means that the previous MovePart already reached exactly the targeted
+				// Distance, so this new MovePart should not move the actor further this tick.
 				if (!firstTick || progress == 0)
 					progress += mobile.MovementSpeedForCell(self, mobile.ToCell);
+				else if (progress == -1)
+					progress = 0;
 
 				firstTick = false;
 
@@ -561,7 +565,9 @@ namespace OpenRA.Mods.Common.Activities
 				// Move might immediately queue a new MoveFirstHalf within the same tick if we haven't
 				// reached the end of the requested path. Make sure that any leftover movement progress is
 				// correctly carried over into this new activity to avoid a glitch in the apparent move speed.
-				Move.carryoverProgress = progress - Distance;
+				// Pass -1 to prevent further movement the same tick if we already exactly hit the targeted Distance.
+				var toCarryOver = progress - Distance;
+				Move.carryoverProgress = toCarryOver == 0 ? -1 : toCarryOver;
 				return null;
 			}
 		}
