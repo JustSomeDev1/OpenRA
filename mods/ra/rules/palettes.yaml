@@ -142,3 +142,5 @@
 		BasePalette: player
 		Index: 7, 14, 118, 119, 159, 187, 188
 		ReplaceIndex: 137, 15, 129, 131, 137, 163, 165
+	ColorPickerColorShift:
+		BasePalette: colorpicker
