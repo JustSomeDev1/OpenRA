@@ -10,13 +10,16 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace OpenRA.Server
 {
-	public class Connection
+	public class Connection : IDisposable
 	{
 		public const int MaxOrderLength = 131072;
 
@@ -36,11 +39,70 @@ namespace OpenRA.Server
 		int frame = 0;
 		long lastReceivedTime = 0;
 
+		readonly Thread sendThread;
+		readonly CancellationTokenSource sendCancellationToken = new CancellationTokenSource();
+		readonly BlockingCollection<byte[]> sendQueue = new BlockingCollection<byte[]>();
+		volatile Stopwatch currentSendElapsed;
+
 		public Connection(Socket socket, int playerIndex, string authToken)
 		{
 			Socket = socket;
 			PlayerIndex = playerIndex;
 			AuthToken = authToken;
+
+			// Spawn a dedicated thread for sending data to this connection.
+			// This allows us to detect and drop the client if sending has blocked for too long.
+			sendThread = new Thread(SendThreadLoop)
+			{
+				Name = $"Connection send thread ({Socket.RemoteEndPoint})",
+				IsBackground = true
+			};
+
+			sendThread.Start(sendCancellationToken.Token);
+		}
+
+		void SendThreadLoop(object obj)
+		{
+			var token = (CancellationToken)obj;
+			try
+			{
+				while (true)
+				{
+					// Wait for some data to send
+					// OperationCanceledException will be throw if the cancellation token is canceled, exiting the loop
+					var data = sendQueue.Take(token);
+					currentSendElapsed = Stopwatch.StartNew();
+					Socket.Send(data);
+					currentSendElapsed = null;
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Write("server", $"Sending to {Socket.RemoteEndPoint} failed with error {e}");
+			}
+
+			// Clean up the socket
+			try
+			{
+				if (token.IsCancellationRequested)
+					Socket.Close();
+				else
+					Socket.Shutdown(SocketShutdown.Send);
+			}
+			catch { }
+		}
+
+		public void SendDataAsync(byte[] data)
+		{
+			if (!sendThread.IsAlive)
+				throw new Exception($"Connection send thread ({Socket.RemoteEndPoint}) is no longer alive.");
+
+			// Take a copy of the timer to avoid a race with the send thread
+			var sendElapsed = currentSendElapsed;
+			if (sendElapsed != null && sendElapsed.ElapsedMilliseconds > 10000)
+				throw new Exception("Connection send thread ({Socket.RemoteEndPoint}) blocked for ${sendElapsed.ElapsedMilliseconds}ms");
+
+			sendQueue.Add(data);
 		}
 
 		public byte[] PopBytes(int n)
@@ -129,6 +191,16 @@ namespace OpenRA.Server
 					}
 				}
 			}
+		}
+
+		public void Dispose()
+		{
+			// If the send thread is still alive we must allow that to finish sending any data before disposing the connection.
+			// If the send thread is not alive we must dispose it here because the send thread can't.
+			if (sendThread.IsAlive)
+				sendCancellationToken.Cancel();
+			else
+				Socket.Dispose();
 		}
 	}
 
