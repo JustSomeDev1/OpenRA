@@ -99,29 +99,6 @@ namespace OpenRA.Server
 			c.Color = pr.LockColor ? pr.Color : c.PreferredColor;
 		}
 
-		static void SendData(Socket s, byte[] data)
-		{
-			var start = 0;
-			var length = data.Length;
-
-			// Non-blocking sends are free to send only part of the data
-			while (start < length)
-			{
-				var sent = s.Send(data, start, length - start, SocketFlags.None, out var error);
-				if (error == SocketError.WouldBlock)
-				{
-					Log.Write("server", "Non-blocking send of {0} bytes failed. Falling back to blocking send.", length - start);
-					s.Blocking = true;
-					sent = s.Send(data, start, length - start, SocketFlags.None);
-					s.Blocking = false;
-				}
-				else if (error != SocketError.Success)
-					throw new SocketException((int)error);
-
-				start += sent;
-			}
-		}
-
 		public void Shutdown()
 		{
 			State = ServerState.ShuttingDown;
@@ -366,14 +343,14 @@ namespace OpenRA.Server
 			var newConn = new Connection(newSocket, ChooseFreePlayerIndex(), token);
 			try
 			{
-				newConn.Socket.Blocking = false;
 				newConn.Socket.NoDelay = true;
 
 				// Send handshake and client index.
 				var ms = new MemoryStream(8);
 				ms.WriteArray(BitConverter.GetBytes(ProtocolVersion.Handshake));
 				ms.WriteArray(BitConverter.GetBytes(newConn.PlayerIndex));
-				SendData(newConn.Socket, ms.ToArray());
+
+				newConn.SendDataAsync(ms.ToArray());
 
 				PreConns.Add(newConn);
 
@@ -669,7 +646,7 @@ namespace OpenRA.Server
 				ms.WriteArray(BitConverter.GetBytes(client));
 				ms.WriteArray(BitConverter.GetBytes(frame));
 				ms.WriteArray(data);
-				SendData(c.Socket, ms.ToArray());
+				c.SendDataAsync(ms.ToArray());
 			}
 			catch (Exception e)
 			{
@@ -1090,11 +1067,7 @@ namespace OpenRA.Server
 				}
 			}
 
-			try
-			{
-				toDrop.Socket.Disconnect(false);
-			}
-			catch { }
+			toDrop.Dispose();
 		}
 
 		public void SyncLobbyInfo()
