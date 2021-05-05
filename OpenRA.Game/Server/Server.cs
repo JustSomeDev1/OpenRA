@@ -10,6 +10,7 @@
 #endregion
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -101,10 +102,15 @@ namespace OpenRA.Server
 			c.Color = pr.LockColor ? pr.Color : c.PreferredColor;
 		}
 
+		static BlockingCollection<object> sendDataSignal = new BlockingCollection<object>();
+
 		static void SendData(Socket s, byte[] data)
 		{
 			var start = 0;
 			var length = data.Length;
+
+			// Drain the queue
+			while (sendDataSignal.TryTake(out _)) { };
 
 			// The non-blocking Socket.Send call can in some situations block for 10+ minutes rather than
 			// returning with SocketError.WouldBlock.
@@ -114,7 +120,7 @@ namespace OpenRA.Server
 			// Avoid stalling the server by using a task with a timeout to raise an exception if either the
 			// "non-blocking" or the explicitly blocking fallback take too long.
 			// The calling code is expected to handle this in the same way it would a "real" SocketException.
-			var sendTask = Task.Run(() =>
+			Task.Run(() =>
 			{
 				// Non-blocking sends are free to send only part of the data
 				while (start < length)
@@ -137,9 +143,12 @@ namespace OpenRA.Server
 
 					start += sent;
 				}
+
+				// Signal the main thread to continue
+				sendDataSignal.Add(new object());
 			});
 
-			if (!sendTask.Wait(10000))
+			if (!sendDataSignal.TryTake(out _, 10000))
 				throw new Exception("Socket.Send blocked for more than 10 seconds");
 		}
 
