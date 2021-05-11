@@ -194,12 +194,14 @@ namespace OpenRA.Graphics
 			shader.SetTexture("Palette", palette);
 		}
 
-		public void SetViewportParams(Size screen, float depthScale, float depthOffset, int2 scroll)
+		public void SetViewportParams(Size screen, int downscale, float depthMargin, int2 scroll)
 		{
+			var depthScale = screen.Height / (screen.Height + depthMargin / downscale);
+			var depthOffset = depthScale / 2;
 			shader.SetVec("Scroll", scroll.X, scroll.Y, scroll.Y);
 			shader.SetVec("r1",
-				2f / screen.Width,
-				2f / screen.Height,
+				2f / (downscale * screen.Width),
+				2f / (downscale * screen.Height),
 				-depthScale / screen.Height);
 			shader.SetVec("r2", -1, -1, 1 - depthOffset);
 
