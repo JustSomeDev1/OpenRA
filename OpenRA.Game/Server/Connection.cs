@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -26,6 +27,7 @@ namespace OpenRA.Server
 		public int Frame = 0;
 		public int MostRecentFrame = 0;
 		public bool Validated;
+		public readonly Stopwatch ConnectionTimer = Stopwatch.StartNew();
 
 		public long TimeSinceLastResponse { get { return Game.RunTime - lastReceivedTime; } }
 		public bool TimeoutMessageShown = false;

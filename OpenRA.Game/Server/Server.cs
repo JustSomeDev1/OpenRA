@@ -877,8 +877,14 @@ namespace OpenRA.Server
 						}
 
 					case "Chat":
-						DispatchOrdersToClients(conn, 0, o.Serialize());
+					{
+						var connected = conn.ConnectionTimer.ElapsedMilliseconds / 1000;
+						if (connected < 10)
+							SendOrderTo(conn, "Message", "Chat is disabled. Please try again in {0} seconds".F(10 - connected));
+						else
+							DispatchOrdersToClients(conn, 0, o.Serialize());
 						break;
+					}
 					case "Pong":
 						{
 							if (!OpenRA.Exts.TryParseInt64Invariant(o.TargetString, out var pingSent))
