@@ -880,7 +880,7 @@ namespace OpenRA.Server
 					{
 						var connected = conn.ConnectionTimer.ElapsedMilliseconds / 1000;
 						if (connected < 5)
-							SendOrderTo(conn, "Message", "AntiSpan - Chat is disabled for a few seconds when you connect to a new server");
+							SendOrderTo(conn, "Message", "AntiSpam - Chat is disabled for a few seconds when you connect to a new server");
 						else
 							DispatchOrdersToClients(conn, 0, o.Serialize());
 						break;
